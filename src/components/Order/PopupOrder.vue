@@ -191,6 +191,7 @@
 import CheckedIcon from "../../assets/images/success-green-check-mark-icon.png";
 import InputMoney from "../InputMoney.vue";
 import Popup from "../Popup.vue";
+import { products } from '../../assets/data'
 
 export default {
   props: {
@@ -261,13 +262,7 @@ export default {
       serviceFee: 0,
       vat: 0,
     },
-    products: Array.from(Array(50).keys()).map((e) => ({
-      id: `product-${e}`,
-      name: `Sản phẩm ${e}`,
-      price: e * 1000,
-      image: "https://via.placeholder.com/50x100",
-      unit: e % 2 ? "Lon" : "Cái",
-    })),
+    products,
     isShow: false,
   }),
   methods: {

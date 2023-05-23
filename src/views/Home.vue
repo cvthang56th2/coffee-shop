@@ -5,20 +5,11 @@ import NoCustomerImg from "../assets/images/icons8-restaurant-noCustomer.png";
 import HaveCustomerImg from "../assets/images/icons8-restaurant-table.png";
 import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
 import { ref, computed } from "vue";
+import { listTables as list } from '../assets/data'
 
 const keyword = ref(null)
-const listTables = ref(
-  [1, 2, 3].reduce((resultArr, group) => {
-    return [
-      ...resultArr,
-      ...[...Array(24).keys()].map((e) => ({
-        id: `group-${group}-table-${e}`,
-        name: `B-${e + 1}`,
-        group,
-      })),
-    ];
-  }, [])
-);
+let i = 0
+const listTables = ref(JSON.parse(JSON.stringify(list)))
 const listTablesEmpty = computed(() => listTables.value.filter(e => !e.bill))
 const computedListTables = computed(() => {
   let result = JSON.parse(JSON.stringify(listTables.value))
