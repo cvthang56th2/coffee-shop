@@ -204,6 +204,9 @@ import CheckedIcon from "../../assets/images/success-green-check-mark-icon.png";
 import InputMoney from "../InputMoney.vue";
 import Popup from "../Popup.vue";
 import { products } from '../../assets/data'
+import OrderServices from '../../firebase/order/order'
+import { uid } from 'uid'
+import { ORDER_STATUS } from "../../constants/constants";
 
 export default {
   props: {
@@ -219,6 +222,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    nextOrder: {
+      type: Number,
+      required: true
+    }
   },
   components: {
     Popup,
@@ -230,10 +237,10 @@ export default {
       clearInterval(this.timeInterval);
       if (v) {
         this.hasChange = false
-        const { items = [], decreaseBill = 0, serviceFee = 0, vat = 0, createdAt } = JSON.parse(
+        const { id, items = [], decreaseBill = 0, serviceFee = 0, vat = 0, createdAt } = JSON.parse(
           JSON.stringify(this.isRetail ? {} : (this.currentTable.bill || {}))
         );
-        this.formData = { items, decreaseBill, serviceFee, vat };
+        this.formData = { id, items, decreaseBill, serviceFee, vat };
         if (createdAt) {
           this.billTime = this.$formatDate(createdAt, "DD/MM/YYYY hh:mm:ss")
         } else {
@@ -338,11 +345,22 @@ export default {
         return false
       }
 
-      this.$emit("saved", {
+      const billData = {
         ...JSON.parse(JSON.stringify(this.formData)),
-        createdAt: new Date(),
         total: this.totalBill,
-      });
+        tableId: this.isRetail ? 'retail' : this.currentTable.id,
+        id: this.formData.id || uid(20),
+        status: ORDER_STATUS.pending
+      }
+      if (this.formData.id) {
+        if (this.hasChange) {
+          OrderServices.updateOrder(this.formData.id, billData)
+        }
+      } else {
+        billData.orderId = this.nextOrder
+        OrderServices.createOrder(billData)
+      }
+      this.$emit("saved", billData);
       if (!this.isRetail) {
         Toast.fire({
           icon: 'success',

@@ -29,6 +29,7 @@
 <script>
 import Popup from "./Popup.vue";
 import vSelect from "vue-select";
+import OrderServices from '../firebase/order/order'
 
 export default {
   props: {
@@ -90,6 +91,9 @@ export default {
         })
         return
       }
+      OrderServices.updateOrder(this.currentTable.bill.id, {
+        tableId: this.changeToTable
+      })
       this.$emit('saved', this.changeToTable)
 
       Toast.fire({

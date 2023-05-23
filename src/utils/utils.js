@@ -1,32 +1,7 @@
-export const formatDate = (dateString, format = 'DD/MM/YYYY hh:mm')  => {
-  if (!dateString) {
-    return ''
-  }
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let day = date.getDate();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-
-  // Add leading zero to month, day, hours, minutes, seconds if necessary
-  month = month < 10 ? '0' + month : month;
-  day = day < 10 ? '0' + day : day;
-  hours = hours < 10 ? '0' + hours : hours;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
-
-  // Replace format placeholders with corresponding date parts
-  format = format.replace('YYYY', year);
-  format = format.replace('MM', month);
-  format = format.replace('DD', day);
-  format = format.replace('hh', hours);
-  format = format.replace('mm', minutes);
-  format = format.replace('ss', seconds);
-
-  return format;
-}
+import moment from 'moment'
+import {
+  Timestamp
+} from 'firebase/firestore'
 
 export const formatCurrency = (amount = 0) => {
   return new Intl.NumberFormat('vi-VN', {
@@ -50,4 +25,35 @@ export const numberWithCommas = (num = '') => {
 
 export function parseToNumber(str) {
   return parseFloat(str.replaceAll(',', '')) || 0;
+}
+
+export const snapshotToArray = (snapshot) => {
+  const data = [];
+  if (snapshot) {
+    snapshot.forEach((doc) => {
+      data.push(doc.data());
+    });
+  }
+  return data;
+};
+
+
+export const formatDate = (date, format = 'DD/MM/YYYY hh:mm') => {
+  if (!date) {
+    return
+  }
+  if (date.seconds && date.nanoseconds) {
+    date = new Timestamp(date.seconds , date.nanoseconds).toDate();
+  }
+  if (
+    ['boolean', 'undefined'].indexOf(typeof date) === -1 &&
+    (!Number(date) || Number(date) > 24339600000)
+  ) {
+    const tmpDate = moment(date)
+    if (date && String(tmpDate) !== 'Invalid Date') {
+      return tmpDate.format(format)
+    }
+  }
+
+  return date
 }

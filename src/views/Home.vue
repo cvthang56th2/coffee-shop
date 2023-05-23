@@ -5,9 +5,13 @@ import PopupPayment from "../components/PopupPayment.vue";
 import NoCustomerImg from "../assets/images/icons8-restaurant-noCustomer.png";
 import HaveCustomerImg from "../assets/images/icons8-restaurant-table.png";
 import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, inject } from "vue";
 import { listTables as list } from "../assets/data";
+import OrderServices from '../firebase/order/order'
+import { ORDER_STATUS } from '../constants/constants'
 
+const swal = inject('$swal')
+const orders = ref([])
 const keyword = ref(null);
 const listTables = ref(JSON.parse(JSON.stringify(list)));
 const listTablesEmpty = computed(() => listTables.value.filter((e) => !e.bill));
@@ -84,9 +88,54 @@ const onChangeTable = (toTableId) => {
 const onSavePayment = () => {
   if (!isRetail.value) {
     delete selectedTable.value.bill
-    selectedTable.value = null
   }
 };
+
+const cancelOrder = () => {
+  if (selectedTable.value.bill?.id) {
+    swal.fire({
+      title: 'Bạn có chắc muốn hủy bàn này không?',
+      showCancelButton: true,
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+      const Toast = swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', swal.stopTimer)
+          toast.addEventListener('mouseleave', swal.resumeTimer)
+        }
+      })
+        OrderServices.updateOrder(selectedTable.value.bill.id, {
+          status: ORDER_STATUS.cancel
+        })
+        Toast.fire({
+          icon: 'success',
+          title: 'Hủy bàn thành công!'
+        })
+      }
+    })
+  }
+}
+
+onMounted(() => {
+  OrderServices.getOrders(data => {
+    orders.value = data || []
+    listTables.value = listTables.value.map(e => ({
+      ...e,
+      bill: orders.value.find(order => order.status === ORDER_STATUS.pending && order.tableId === e.id)
+    }))
+    if (selectedTable.value) {
+      selectedTable.value = listTables.value.find(e => e.id === selectedTable.value.id)
+    }
+  })
+})
 </script>
 <template>
   <div class="flex flex-col h-full">
@@ -140,6 +189,16 @@ const onSavePayment = () => {
             @click="isShowPopupPayment = true"
           >
             Thanh toán
+          </button>
+          <button
+            :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
+            :class="
+              !selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''
+            "
+            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-red-500 hover:bg-red-700 font-bold rounded-md mr-4"
+            @click="cancelOrder"
+          >
+            Hủy<br>bàn
           </button>
         </div>
       </div>
@@ -239,6 +298,7 @@ const onSavePayment = () => {
       v-model="isShowPopupOrder"
       :currentTable="isRetail ? {} : (selectedTable || {})"
       :isRetail="isRetail"
+      :nextOrder="orders.length + 1"
       @saved="onOrderSaved"
       @openPayment="isShowPopupPayment = true"
     />

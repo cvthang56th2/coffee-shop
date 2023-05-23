@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model="isShow" @hide="hide" width="500px" title="Thanh toán">
+  <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" >
     <div class="p-4">
       <div id="bill-html">
         <div class="text-center font-bold text-2xl mb-2">Coffee Shop</div>
@@ -71,8 +71,17 @@
     <template v-slot:buttons>
       <div class="flex justify-end p-3">
         <button
-          class="bg-blue-500 w-1/2 text-white hover:bg-blue-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
+          v-if="isRetail"
+          class="bg-red-500 w-1/3 text-white hover:bg-red-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
           type="button"
+          @click="cancelOrder"
+        >
+          Hủy
+        </button>
+        <button
+          class="bg-blue-500 text-white hover:bg-blue-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
+          type="button"
+          :class="isRetail ? 'ml-2 w-1/3' : 'w-1/2'"
           @click="printBill"
         >
           In hoá đơn
@@ -80,6 +89,7 @@
         <button
           class="bg-green-500 w-1/2 text-white hover:bg-green-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm ml-2"
           type="button"
+          :class="isRetail ? 'w-1/3' : 'w-1/2'"
           @click="savePayment"
         >
           Xác nhận
@@ -91,6 +101,8 @@
 
 <script>
 import Popup from "./Popup.vue";
+import OrderServices from '../firebase/order/order'
+import { ORDER_STATUS } from '../constants/constants'
 
 export default {
   props: {
@@ -141,6 +153,9 @@ export default {
           toast.addEventListener('mouseleave', this.$swal.resumeTimer)
         }
       })
+      OrderServices.updateOrder(this.currentTable.bill.id, {
+        status: ORDER_STATUS.success
+      })
       Toast.fire({
         icon: 'success',
         title: 'Thanh toán thành công!'
@@ -148,6 +163,39 @@ export default {
       // call api
       this.$emit('saved')
       this.hide()
+    },
+    cancelOrder() {
+      if (this.currentTable.bill?.id) {
+        this.$swal.fire({
+          title: 'Bạn có chắc muốn hủy bill này không?',
+          showCancelButton: true,
+          cancelButtonText: 'Không',
+          confirmButtonText: 'Có',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+          const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', this.$swal.stopTimer)
+              toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+            }
+          })
+            OrderServices.updateOrder(this.currentTable.bill.id, {
+              status: ORDER_STATUS.cancel
+            })
+            Toast.fire({
+              icon: 'success',
+              title: 'Hủy bàn thành công!'
+            })
+            this.hide()
+          }
+        })
+      }
     }
   },
 };

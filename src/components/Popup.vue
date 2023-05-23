@@ -11,7 +11,7 @@
                 {{ title }}
               </h4>
             </slot>
-            <button class="text-5xl font-bold text-red-500 hover:text-black ease-linear transition-all duration-150 absolute top-[-16px] right-0" @click="hide()">
+            <button v-if="!hideXbutton" class="text-5xl font-bold text-red-500 hover:text-black ease-linear transition-all duration-150 absolute top-[-16px] right-0" @click="hide()">
               ×
             </button>
           </div>
@@ -39,6 +39,10 @@ export default {
   name: "large-modal",
   props: {
     modelValue: {
+      type: Boolean,
+      default: false
+    },
+    hideXbutton: {
       type: Boolean,
       default: false
     },
