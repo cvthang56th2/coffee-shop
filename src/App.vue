@@ -10,18 +10,35 @@ const formData = ref({
   userName: 'admin'
 })
 const login = () => {
+  const Toast = swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', swal.stopTimer)
+      toast.addEventListener('mouseleave', swal.resumeTimer)
+    }
+  })
   const { userName, password } = formData.value
   if (userName === 'admin' && password === 'password') {
     isLogin.value = true
     cookies.set('__IS_LOGIN__', 'YESSSSSSSSSSSSSSSSSS_PLEASEEEEEEE')
-    swal('Đăng nhập thành công', '', 'success')
+    Toast.fire({
+      icon: 'success',
+      title: 'Đăng nhập thành công!'
+    })
   } else {
-    swal('Sai mật khẩu', '', 'error')
+    Toast.fire({
+      icon: 'error',
+      title: 'Sai mật khẩu'
+    })
   }
 }
 const logout = () => {
   swal.fire({
-    title: 'Bạn có chắc muốn đăng xuất?',
+    title: 'Bạn có chắc muốn khóa máy?',
     showCancelButton: true,
     cancelButtonText: 'Không',
     confirmButtonText: 'Có',
@@ -48,8 +65,8 @@ onMounted(() => {
           <img :src="Favicon" alt="icon" width="40" class="mr-2">
           Coffee Shop
         </div>
-        <button class="absolute top-4 right-4 text-red-500 font-semibold" @click="logout">
-          Đăng xuất
+        <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-4 py-2" @click="logout">
+          Khóa máy
         </button>
         <!-- <div>
           <ul class="flex items-center py-2">

@@ -7,16 +7,16 @@
         <div class="text-center">Điện thoại: 0123456789</div>
         <div class="text-center font-bold text-xl mt-2">PHIẾU THANH TOÁN</div>
         <div class="flex">
-          <div class="w-1-2 mr-2">N.V: Admin</div>
+          <div class="w-1-2 mr-2">N.viên: admin</div>
           <div class="w-1-2 ml-2">HĐ: 12345</div>
         </div>
         <div class="flex">
-          <div class="w-1-2 mr-2">Giờ vào: 3:00 PM</div>
-          <div class="w-1-2 ml-2">Giờ ra: 4:00PM</div>
+          <div class="w-1-2 mr-2">Giờ vào: {{ $formatDate(currentTable.bill.createdAt) }}</div>
+          <div class="w-1-2 ml-2">Giờ ra: {{ $formatDate(new Date()) }}</div>
         </div>
         <div class="flex font-bold">
           <div class="w-1-2 mr-2">Khu vực: {{ currentTable.group }}</div>
-          <div class="w-1-2 ml-2">Bàn: {{ currentTable.name }}</div>
+          <div class="w-1-2 ml-2">Bàn: {{ isRetail ? 'Bán lẻ' : currentTable.name }}</div>
         </div>
         <div class="flex mt-2">
           <div class="w-4-12 px-2 py-1 text-center font-bold border-1px border-black">Món</div>
@@ -56,9 +56,6 @@
         </div>
         <div class="flex mt-2">
           <div class="w-1-2 mr-2">Giảm giá: {{currentTable.bill.decreaseBill ? '-' : ''}} {{ $numberWithCommas(currentTable.bill.decreaseBill) }}</div>
-          <div class="w-1-2 ml-2">
-            Giờ in: {{ $formatDate(new Date()) }}
-          </div>
         </div>
         <div class="flex mt-2">
           <div class="w-1-2 font-bold">
@@ -68,7 +65,7 @@
         <div class="flex justify-center mt-2">
           <div class="w-5-6 border-1px border-black"></div>
         </div>
-        <div class="pt-1 text-center">Cảm ơn quý khách, hẹn gặp lại!</div>
+        <div class="pt-1 text-center italic">Cảm ơn quý khách, hẹn gặp lại!</div>
       </div>
     </div>
     <template v-slot:buttons>
@@ -83,6 +80,7 @@
         <button
           class="bg-green-500 w-1/2 text-white hover:bg-green-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm ml-2"
           type="button"
+          @click="savePayment"
         >
           Xác nhận
         </button>
@@ -97,6 +95,10 @@ import Popup from "./Popup.vue";
 export default {
   props: {
     modelValue: {
+      type: Boolean,
+      default: false,
+    },
+    isRetail: {
       type: Boolean,
       default: false,
     },
@@ -127,6 +129,26 @@ export default {
     getItemTotal(item) {
       return (item.price || 0) * item.quantity - (item.decrease || 0);
     },
+    savePayment () {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', this.$swal.stopTimer)
+          toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+        }
+      })
+      Toast.fire({
+        icon: 'success',
+        title: 'Thanh toán thành công!'
+      })
+      // call api
+      this.$emit('saved')
+      this.hide()
+    }
   },
 };
 </script>

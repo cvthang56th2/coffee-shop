@@ -92,3 +92,6 @@ body {
 .justify-center {
   justify-content: center;
 }
+.italic {
+  font-style: italic;
+}

@@ -6,14 +6,13 @@ import NoCustomerImg from "../assets/images/icons8-restaurant-noCustomer.png";
 import HaveCustomerImg from "../assets/images/icons8-restaurant-table.png";
 import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
 import { ref, computed } from "vue";
-import { listTables as list } from '../assets/data'
+import { listTables as list } from "../assets/data";
 
-const keyword = ref(null)
-let i = 0
-const listTables = ref(JSON.parse(JSON.stringify(list)))
-const listTablesEmpty = computed(() => listTables.value.filter(e => !e.bill))
+const keyword = ref(null);
+const listTables = ref(JSON.parse(JSON.stringify(list)));
+const listTablesEmpty = computed(() => listTables.value.filter((e) => !e.bill));
 const computedListTables = computed(() => {
-  let result = JSON.parse(JSON.stringify(listTables.value))
+  let result = JSON.parse(JSON.stringify(listTables.value));
   if (keyword.value) {
     const regex = new RegExp(keyword.value, "gi");
     result = result.filter(
@@ -21,8 +20,13 @@ const computedListTables = computed(() => {
         (e.id && String(e.id).match(regex)) || (e.name && String(e.name).match(regex))
     );
   }
-  return result
-})
+  return result;
+});
+const groupColors = {
+  1: "text-blue-700",
+  2: "text-green-700",
+  3: "text-pink-700",
+};
 const groupedTables = computed(() => {
   const groupedTablesObject = computedListTables.value.reduce((resultObj, table) => {
     resultObj[table.group] = resultObj[table.group] || [];
@@ -35,73 +39,109 @@ const groupedTables = computed(() => {
   }));
 });
 const statisticCurrent = computed(() => {
-  const totalEmpty = listTablesEmpty.value.length
-  const totalHaveCustomer = listTables.value.length - totalEmpty
+  const totalEmpty = listTablesEmpty.value.length;
+  const totalHaveCustomer = listTables.value.length - totalEmpty;
   return {
     totalHaveCustomer,
     totalEmpty,
-  }
-})
+  };
+});
 const isShowPopupOrder = ref(false);
+const isRetail = ref(false);
+const retailBill = ref({})
 const isShowPopupChangeTable = ref(false);
 const isShowPopupPayment = ref(false);
 const selectedTable = ref(null);
 
 const openPopupOrder = (table) => {
+  isRetail.value = false
   selectedTable.value = table;
   isShowPopupOrder.value = true;
 };
 
-const onOrderSaved = (bill) => {
-  selectedTable.value.bill = bill
+const openRetail = () => {
+  isRetail.value = true
+  isShowPopupOrder.value = true;
 }
+
+const onOrderSaved = (bill) => {
+  if (isRetail.value) {
+    retailBill.value = bill
+  } else {
+    selectedTable.value.bill = bill;
+  }
+};
 
 const onChangeTable = (toTableId) => {
-  const tableIndex = listTables.value.findIndex(e => e.id === toTableId)
+  const tableIndex = listTables.value.findIndex((e) => e.id === toTableId);
   if (tableIndex !== -1) {
-    listTables.value[tableIndex].bill = selectedTable.value.bill
-    delete selectedTable.value.bill
-    selectedTable.value = listTables.value[tableIndex]
+    listTables.value[tableIndex].bill = selectedTable.value.bill;
+    delete selectedTable.value.bill;
+    selectedTable.value = listTables.value[tableIndex];
   }
-}
+};
 
 const onSavePayment = () => {
-}
+  if (!isRetail.value) {
+    delete selectedTable.value.bill
+    selectedTable.value = null
+  }
+};
 </script>
 <template>
   <div class="flex flex-col h-full">
     <div class="flex flex-wrap items-center justify-between pb-2 border-b-2 flex-0 px-4">
-      <div class="w-full xl:w-2/3 mb-2 xl:mb-0 flex justify-center xl:justify-start items-center">
-        <div class="mr-10 text-3xl">
+      <div
+        class="w-full xl:w-2/3 mb-2 xl:mb-0 lg:flex justify-center xl:justify-start items-center"
+      >
+        <div class="mb-2 lg:mb-0 mr-10 text-3xl">
           Bàn đang chọn:
+          bàn
           <span class="font-bold">{{
             (selectedTable && selectedTable.name) || "-"
           }}</span>
+          khu
+          <span class="font-bold">{{
+            (selectedTable && selectedTable.group) || "-"
+          }}</span>
         </div>
-        <button
-          :disabled="!selectedTable"
-          :class="!selectedTable ? 'opacity-30' : ''"
-          class="w-[70px] h-[70px] flex items-center justify-center text-white bg-green-500 font-bold rounded-md mr-4"
-          @click="openPopupOrder(selectedTable)"
-        >
-          Chọn món
-        </button>
-        <button
-          :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
-          :class="!selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''"
-          class="w-[70px] h-[70px] flex items-center justify-center text-white bg-purple-500 font-bold rounded-md mr-4"
-          @click="isShowPopupChangeTable = true"
-        >
-          Chuyển bàn
-        </button>
-        <button
-          :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
-          :class="!selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''"
-          class="w-[70px] h-[70px] flex items-center justify-center text-white bg-pink-500 font-bold rounded-md mr-4"
-          @click="isShowPopupPayment = true"
-        >
-          Thanh toán
-        </button>
+        <div class="flex">
+          <button
+            :disabled="!selectedTable"
+            :class="!selectedTable ? 'opacity-30' : ''"
+            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-green-500 hover:bg-green-700 font-bold rounded-md mr-4"
+            @click="openPopupOrder(selectedTable)"
+          >
+            Chọn món
+          </button>
+          <button
+            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-blue-500 hover:bg-blue-700 font-bold rounded-md mr-4"
+            @click="openRetail()"
+          >
+            Bán<br>
+            lẻ
+          </button>
+          <button
+            :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
+            :class="
+              !selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''
+            "
+            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-purple-500 hover:bg-purple-700 font-bold rounded-md mr-4"
+            @click="isShowPopupChangeTable = true"
+          >
+            Chuyển bàn
+          </button>
+          <button
+            :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
+            :class="
+              !selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''
+            "
+            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-pink-500 hover:bg-pink-700 font-bold rounded-md mr-4"
+            @click="isShowPopupPayment = true"
+          >
+            Thanh toán
+          </button>
+        </div>
       </div>
       <input
         v-model="keyword"
@@ -110,16 +150,17 @@ const onSavePayment = () => {
         class="w-full xl:w-1/3 border-1px border-blue-400 rounded-sm p-2"
       />
     </div>
-    <div class="flex-1 overflow-y-auto p-1">
+    <div class="flex-1 overflow-y-auto p-2 bg-gray-200">
       <div
         v-for="(group, gIndex) in groupedTables"
-        class="p-2 border-2 mb-4 rounded-md shadow-md"
+        class="p-2 border-[1px] border-b-[4px] border-r-[4px] border-gray-700 mb-4 rounded-xl bg-white"
         :key="`group-${gIndex}`"
       >
         <div
           class="text-2xl font-bold mb-2 text-blue-500 bg-white px-2 py-1 text-center underline"
+          :class="groupColors[group.groupId]"
         >
-          Khu {{ gIndex + 1 }}
+          Khu vực {{ group.groupId }}
         </div>
         <div class="flex flex-wrap -mx-1">
           <div
@@ -156,15 +197,21 @@ const onSavePayment = () => {
                   :class="table.bill ? 'bg-blue-400' : 'bg-gray-300'"
                   class="min-h-[30px] text-white text-sm flex items-center justify-end px-1"
                 >
-                  {{ table.bill ? $formatDate(new Date()) : "" }}
+                  {{ table.bill ? $formatDate(table.bill.createdAt) : "" }}
                 </div>
                 <div class="px-2 py-1">
-                  <div class="text-xl font-semibold text-blue-500">{{ table.name }}</div>
+                  <div class="text-xl font-semibold" :class="groupColors[group.groupId]">
+                    {{ table.name }}
+                  </div>
                   <div class="flex items-end justify-between">
                     <div class="text-red-500 font-semibold">
-                      {{ table.bill ? $numberWithCommas(table.bill.total || 0) : '' }}
+                      {{ table.bill ? $numberWithCommas(table.bill.total || 0) : "" }}
                     </div>
-                    <img :src="table.bill ? HaveCustomerImg : NoCustomerImg" alt="" width="36" />
+                    <img
+                      :src="table.bill ? HaveCustomerImg : NoCustomerImg"
+                      alt=""
+                      width="36"
+                    />
                   </div>
                 </div>
               </div>
@@ -173,23 +220,39 @@ const onSavePayment = () => {
         </div>
       </div>
     </div>
-    <div class="flex justify-between py-2 border-t-2 flex-0 px-4 border-yellow-500">
-      <div class="flex mr-2">
+    <div class="md:flex justify-between py-2 border-t-2 flex-0 px-4 border-yellow-500">
+      <div class="flex mr-2 mb-2 md:mb-0">
         <div class="flex items-center mr-4">
-          <div class="h-full w-[40px] bg-blue-400 mr-2"></div>
-          Bàn có khách:<span class="font-bold">{{ statisticCurrent.totalHaveCustomer }}</span>
+          <div class="h-[24px] w-[40px] bg-blue-400 mr-2"></div>
+          Bàn có khách:<span class="font-bold">{{
+            statisticCurrent.totalHaveCustomer
+          }}</span>
         </div>
         <div class="flex items-center">
-          <div class="h-full w-[40px] bg-gray-300 mr-2"></div>
+          <div class="h-[24px] w-[40px] bg-gray-300 mr-2"></div>
           Bàn trống: <span class="font-bold">{{ statisticCurrent.totalEmpty }}</span>
         </div>
       </div>
-      <div class="text-right italic">
-        *Nhấp đôi chuột để chọn món
-      </div>
+      <div class="text-right italic">*Nhấp đôi chuột để chọn món</div>
     </div>
-    <PopupOrder v-model="isShowPopupOrder" :currentTable="selectedTable || {}" @saved="onOrderSaved" />
-    <PopupChangeTable v-model="isShowPopupChangeTable" :currentTable="selectedTable || {}" :emptyTables="listTablesEmpty" @saved="onChangeTable" />
-    <PopupPayment v-model="isShowPopupPayment" :currentTable="selectedTable || {}" @saved="onSavePayment" />
+    <PopupOrder
+      v-model="isShowPopupOrder"
+      :currentTable="isRetail ? {} : (selectedTable || {})"
+      :isRetail="isRetail"
+      @saved="onOrderSaved"
+      @openPayment="isShowPopupPayment = true"
+    />
+    <PopupChangeTable
+      v-model="isShowPopupChangeTable"
+      :currentTable="selectedTable || {}"
+      :emptyTables="listTablesEmpty"
+      @saved="onChangeTable"
+    />
+    <PopupPayment
+      v-model="isShowPopupPayment"
+      :currentTable="isRetail ? { bill: (retailBill || {}) } : (selectedTable || {})"
+      :isRetail="isRetail"
+      @saved="onSavePayment"
+    />
   </div>
 </template>

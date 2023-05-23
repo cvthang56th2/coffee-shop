@@ -2,16 +2,31 @@
   <Popup
     v-model="isShow"
     @hide="onHidePopup"
-    :save="saveOrder"
     :closeOnSave="false"
     persistent
     width="1360px"
   >
+    <template v-slot:buttons>
+      <div class="flex py-2">
+        <div class="w-1/2 px-4" :class="isRetail ? 'w-full' : 'w-1/2'">
+          <button class="bg-pink-500 text-white hover:bg-pink-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b" type="button" @click="saveOrderAndOpenPayment()">
+            Thanh toán
+          </button>
+        </div>
+        <div v-if="!isRetail" class="w-1/2 px-4">
+          <button class="bg-green-500 text-white hover:bg-green-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b" type="button" @click="saveOrder()">
+            Xác nhận
+          </button>
+        </div>
+    </div>  
+    </template>
     <template v-slot:title>
-      <div class="flex items-center justify-between">
-        <h4 class="text-2xl font-semibold">Order cho bàn {{ currentTable.name }}</h4>
+      <div class="md:flex items-center justify-between">
+        <h4 class="text-2xl font-semibold">
+          {{ isRetail ? 'Bán lẻ' : `Order cho bàn ${ currentTable.name } khu ${ currentTable.group }` }}
+        </h4>
         <div class="ml-4 font-semibold text-blue-500 flex-[0_0_200px]">
-          Giờ: {{ billCreatedTime }}
+          Giờ: {{ billTime }}
         </div>
       </div>
     </template>
@@ -22,8 +37,8 @@
             Danh sách món
           </div>
           <div>
-            <span class="text-md font-semibold">Tổng: {{ $numberWithCommas(totalItems) }}</span>
-            <span class="text-xl font-bold">{{  }}</span>
+            <span class="text-md font-semibold">Tổng: </span>
+            <span class="text-xl font-bold">{{ $numberWithCommas(totalItems) }}</span>
           </div>
         </div>
         <div class="flex flex-col overflow-y-auto flex-1 rounded-md">
@@ -88,7 +103,7 @@
           </div>
         </div>
         <div class="flex flex-wrap pt-4 flex-0 border-t-2">
-          <div class="w-1/2 flex px-2 mb-2">
+          <div class="w-full lg:w-1/2 flex px-2 mb-2">
             <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
               Phí D.Vụ
             </div>
@@ -100,7 +115,7 @@
               />
             </div>
           </div>
-          <div class="w-1/2 flex px-2 mb-2">
+          <div class="w-full lg:w-1/2 flex px-2 mb-2">
             <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
               Giảm bill
             </div>
@@ -112,7 +127,7 @@
               />
             </div>
           </div>
-          <div class="w-1/2 flex px-2 mb-2">
+          <div class="w-full lg:w-1/2 flex px-2 mb-2">
             <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
               Thuế
             </div>
@@ -124,7 +139,7 @@
               />
             </div>
           </div>
-          <div class="w-1/2 flex px-2">
+          <div class="w-full lg:w-1/2 flex px-2">
             <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
               Tổng tiền
             </div>
@@ -154,29 +169,24 @@
             :key="`product-item-${pIndex}`"
             class="w-1/2 md:w-1/4 xl:w-1/6 px-[4px] mb-[8px]"
           >
-            <div class="border-1px rounded-md" :class="checkIsChecked(product) ? 'border-green-500' : 'border-white'">
+            <div class="border-1px rounded-md h-full" :class="product.isChecked ? 'border-green-500' : 'border-white'">
               <div
-                class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative"
-                :class="checkIsChecked(product) ? 'border-green-500' : 'border-blue-300 border-b-cyan-600'"
+                class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative select-none h-full items-center"
+                :class="product.isChecked ? 'border-green-500' : 'border-blue-300 border-b-cyan-600'"
                 @click="addItem(product)"
               >
-                <img
-                  v-if="checkIsChecked(product)"
-                  :src="CheckedIcon"
-                  alt=""
-                  class="absolute -top-1 -right-1 bg-white rounded-full"
-                  width="20"
-                />
+                <div v-if="product.isChecked" class="absolute -top-1 -left-1 w-[25px] h-[25px] font-bold bg-green-500 text-white rounded-full flex justify-center items-center">{{ product.countChecked }}</div>
+                <button v-if="product.isChecked" class="absolute -top-1 -right-1 px-[6px] font-bold bg-red-500 text-white rounded-full hover:bg-purple-500" @click.stop="removeItem(product.checkedIndex)">×</button>
                 <div
                   class="flex-[0_0_50px] h-[100px] bg-cover bg-center bg-no-repeat"
                   :style="`background-image: url(${product.image})`"
                 ></div>
                 <div class="flex-1 flex flex-col p-1">
-                  <div class="flex-1 font-semibold">{{ product.name }}</div>
+                  <div class="flex-1 font-semibold mb-2">{{ product.name }}</div>
                   <div>
-                    <div class="text-blue-400">{{ product.unit }}</div>
+                    <div class="text-blue-400 text-sm font-semibold">{{ product.unit }}</div>
                     <div class="text-sm text-red-500 font-semibold">
-                      {{ product.price }}
+                      {{ $numberWithCommas(product.price) }}
                     </div>
                   </div>
                 </div>
@@ -201,6 +211,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isRetail: {
+      type: Boolean,
+      default: false,
+    },
     currentTable: {
       type: Object,
       default: () => ({}),
@@ -217,14 +231,14 @@ export default {
       if (v) {
         this.hasChange = false
         const { items = [], decreaseBill = 0, serviceFee = 0, vat = 0, createdAt } = JSON.parse(
-          JSON.stringify(this.currentTable.bill || {})
+          JSON.stringify(this.isRetail ? {} : (this.currentTable.bill || {}))
         );
         this.formData = { items, decreaseBill, serviceFee, vat };
         if (createdAt) {
-          this.billCreatedTime = createdAt
+          this.billTime = this.$formatDate(createdAt, "DD/MM/YYYY hh:mm:ss")
         } else {
           this.timeInterval = setInterval(() => {
-            this.billCreatedTime = this.$formatDate(new Date(), "DD/MM/YYYY hh:mm:ss");
+            this.billTime = this.$formatDate(new Date(), "DD/MM/YYYY hh:mm:ss");
           }, 100);
         }
       }
@@ -242,7 +256,17 @@ export default {
       return this.totalItems + serviceFee + vat - decreaseBill;
     },
     computedProducts() {
-      let result = JSON.parse(JSON.stringify(this.products));
+      let result = JSON.parse(JSON.stringify(this.products)).map(product => {
+        const index = this.formData.items.findIndex((e) => e.id === product.id)
+        const item = this.formData.items[index]
+        const countChecked = item && item.quantity
+        return {
+          ...product,
+          countChecked,
+          isChecked: !!countChecked,
+          checkedIndex: index
+        }
+      });
       if (this.keyword) {
         const regex = new RegExp(this.keyword, "gi");
         result = result.filter(
@@ -254,8 +278,9 @@ export default {
     },
   },
   data: () => ({
+    timeInterval: null,
     hasChange: false,
-    billCreatedTime: null,
+    billTime: null,
     CheckedIcon,
     keyword: null,
     formData: {
@@ -288,18 +313,44 @@ export default {
       }
       this.hide()
     },
+    saveOrderAndOpenPayment () {
+      if (this.saveOrder()) {
+        this.$emit("openPayment")
+      }
+    },
     saveOrder() {
+      const Toast = this.$swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', this.$swal.stopTimer)
+          toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+        }
+      })
       if (!this.formData.items.length) {
-        this.$swal('Chưa chọn món', 'Vui lòng chọn món.', 'warning');
-        return
+        Toast.fire({
+          icon: 'warning',
+          title: 'Vui lòng chọn món.'
+        })
+        return false
       }
 
       this.$emit("saved", {
         ...JSON.parse(JSON.stringify(this.formData)),
-        createdAt: this.billCreatedTime,
+        createdAt: new Date(),
         total: this.totalBill,
       });
+      if (!this.isRetail) {
+        Toast.fire({
+          icon: 'success',
+          title: 'Order thành công!'
+        })
+      }
       this.hide();
+      return true
     },
     getItemTotal(item) {
       return (item.price || 0) * item.quantity - (item.decrease || 0);
@@ -319,9 +370,11 @@ export default {
         focusIndex = index
       }
       this.$nextTick(() => {
-        const el = document.querySelector(`#input-quantity-${focusIndex}`)
-        if (el && typeof el.focus === 'function') {
-          el.focus()
+        if (window.innerWidth > 1024) {
+          const el = document.querySelector(`#input-quantity-${focusIndex}`)
+          if (el && typeof el.focus === 'function') {
+            el.focus()
+          }
         }
       })
       this.hasChange = true
@@ -329,10 +382,7 @@ export default {
     removeItem(index) {
       this.formData.items.splice(index, 1);
       this.hasChange = true
-    },
-    checkIsChecked(product) {
-      return this.formData.items.some((e) => e.id === product.id);
-    },
+    }
   },
 };
 </script>
