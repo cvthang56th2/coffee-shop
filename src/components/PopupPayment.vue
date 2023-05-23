@@ -7,25 +7,25 @@
         <div class="text-center">Điện thoại: 0123456789</div>
         <div class="text-center font-bold text-xl mt-2">PHIẾU THANH TOÁN</div>
         <div class="flex">
-          <div class="w-1/2 mr-2">N.V: Admin</div>
-          <div class="w-1/2 ml-2">HĐ: 12345</div>
+          <div class="w-1-2 mr-2">N.V: Admin</div>
+          <div class="w-1-2 ml-2">HĐ: 12345</div>
         </div>
         <div class="flex">
-          <div class="w-1/2 mr-2">Giờ vào: 3:00 PM</div>
-          <div class="w-1/2 ml-2">Giờ ra: 4:00PM</div>
+          <div class="w-1-2 mr-2">Giờ vào: 3:00 PM</div>
+          <div class="w-1-2 ml-2">Giờ ra: 4:00PM</div>
         </div>
         <div class="flex font-bold">
-          <div class="w-1/2 mr-2">Khu vực: {{ currentTable.group }}</div>
-          <div class="w-1/2 ml-2">Bàn: {{ currentTable.name }}</div>
+          <div class="w-1-2 mr-2">Khu vực: {{ currentTable.group }}</div>
+          <div class="w-1-2 ml-2">Bàn: {{ currentTable.name }}</div>
         </div>
         <div class="flex mt-2">
-          <div class="w-4/12 px-2 text-center font-bold border-1px border-black">Món</div>
-          <div class="w-2/12 px-2 text-center font-bold border-1px border-black">S.L</div>
-          <div class="w-2/12 px-2 text-center font-bold border-1px border-black">
+          <div class="w-4-12 px-2 py-1 text-center font-bold border-1px border-black">Món</div>
+          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">S.L</div>
+          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">
             Đ.Giá
           </div>
-          <div class="w-2/12 px-2 text-center font-bold border-1px border-black">CK</div>
-          <div class="w-2/12 px-2 text-center font-bold border-1px border-black">
+          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">CK</div>
+          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">
             T.Tiền
           </div>
         </div>
@@ -34,28 +34,39 @@
           class="flex"
           :key="`bill-order-item-${iIndex}`"
         >
-          <div class="w-4/12 px-2 border-1px border-black">{{ item.name }}</div>
-          <div class="w-2/12 px-2 text-right border-1px border-black">
+          <div class="w-4-12 px-2 py-1 border-1px border-black">{{ item.name }}</div>
+          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
             {{ item.quantity }}
           </div>
-          <div class="w-2/12 px-2 text-right border-1px border-black">
-            {{ item.price }}
+          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
+            {{ $numberWithCommas(item.price) }}
           </div>
-          <div class="w-2/12 px-2 text-right border-1px border-black">
+          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
             {{ item.decrease }}
           </div>
-          <div class="w-2/12 px-2 text-right border-1px border-black">
-            {{ getItemTotal(item) }}
+          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
+            {{ $numberWithCommas(getItemTotal(item)) }}
           </div>
         </div>
         <div class="flex mt-2">
-          <div class="w-1/2 mr-2">Giờ in: {{ $formatDate(new Date()) }}</div>
-          <div class="w-1/2 ml-2 font-bold">
-            Thành tiền: {{ currentTable.bill.total }}
+          <div class="w-1-2 mr-2">Phí dịch vụ: {{ $numberWithCommas(currentTable.bill.serviceFee) }}</div>
+          <div class="w-1-2 ml-2">
+            VAT: {{ $numberWithCommas(currentTable.bill.vat) }}
+          </div>
+        </div>
+        <div class="flex mt-2">
+          <div class="w-1-2 mr-2">Giảm giá: {{currentTable.bill.decreaseBill ? '-' : ''}} {{ $numberWithCommas(currentTable.bill.decreaseBill) }}</div>
+          <div class="w-1-2 ml-2">
+            Giờ in: {{ $formatDate(new Date()) }}
+          </div>
+        </div>
+        <div class="flex mt-2">
+          <div class="w-1-2 font-bold">
+            Thành tiền: {{ $numberWithCommas(currentTable.bill.total) }} VNĐ
           </div>
         </div>
         <div class="flex justify-center mt-2">
-          <div class="w-5/6 h-[1px] bg-black"></div>
+          <div class="w-5-6 border-1px border-black"></div>
         </div>
         <div class="pt-1 text-center">Cảm ơn quý khách, hẹn gặp lại!</div>
       </div>
@@ -119,3 +130,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+@import url('../assets/print.css');
+</style>

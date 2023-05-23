@@ -18,7 +18,7 @@ const VueHtmlToPaper = {
       let defaultName = "_blank",
         defaultSpecs = ["fullscreen=yes", "titlebar=yes", "scrollbars=yes"],
         defaultReplace = true,
-        defaultStyles = [];
+        defaultStyles = ['/print.css'];
       let {
         name = defaultName,
         specs = defaultSpecs,
