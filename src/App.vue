@@ -22,7 +22,7 @@ const login = () => {
     }
   })
   const { userName, password } = formData.value
-  if (userName === 'admin' && password === '190599') {
+  if (userName === 'admin' && password === '180599') {
     isLogin.value = true
     cookies.set('__IS_LOGIN__', 'YESSSSSSSSSSSSSSSSSS_PLEASEEEEEEE')
     Toast.fire({
