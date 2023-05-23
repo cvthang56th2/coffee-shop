@@ -1,6 +1,7 @@
 <script setup>
 import PopupOrder from "../components/Order/PopupOrder.vue";
 import PopupChangeTable from "../components/PopupChangeTable.vue";
+import PopupPayment from "../components/PopupPayment.vue";
 import NoCustomerImg from "../assets/images/icons8-restaurant-noCustomer.png";
 import HaveCustomerImg from "../assets/images/icons8-restaurant-table.png";
 import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
@@ -43,6 +44,7 @@ const statisticCurrent = computed(() => {
 })
 const isShowPopupOrder = ref(false);
 const isShowPopupChangeTable = ref(false);
+const isShowPopupPayment = ref(false);
 const selectedTable = ref(null);
 
 const openPopupOrder = (table) => {
@@ -63,6 +65,8 @@ const onChangeTable = (toTableId) => {
   }
 }
 
+const onSavePayment = () => {
+}
 </script>
 <template>
   <div class="flex flex-col h-full">
@@ -94,6 +98,7 @@ const onChangeTable = (toTableId) => {
           :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
           :class="!selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''"
           class="w-[70px] h-[70px] flex items-center justify-center text-white bg-pink-500 font-bold rounded-md mr-4"
+          @click="isShowPopupPayment = true"
         >
           Thanh toán
         </button>
@@ -185,5 +190,6 @@ const onChangeTable = (toTableId) => {
     </div>
     <PopupOrder v-model="isShowPopupOrder" :currentTable="selectedTable || {}" @saved="onOrderSaved" />
     <PopupChangeTable v-model="isShowPopupChangeTable" :currentTable="selectedTable || {}" :emptyTables="listTablesEmpty" @saved="onChangeTable" />
+    <PopupPayment v-model="isShowPopupPayment" :currentTable="selectedTable || {}" @saved="onSavePayment" />
   </div>
 </template>
