@@ -50,7 +50,7 @@
                     @input="hasChange = true"
                     type="number"
                     min="0"
-                    class="outline-none max-w-full border-[1px] rounded-sm"
+                    class="outline-none max-w-full border-1px rounded-sm"
                   />
                 </div>
                 <div
@@ -63,7 +63,7 @@
                   <InputMoney
                     v-model="item.decrease"
                     @input="hasChange = true"
-                    class="outline-none max-w-full border-[1px] rounded-sm"
+                    class="outline-none max-w-full border-1px rounded-sm"
                   />
                 </div>
                 <div
@@ -96,7 +96,7 @@
               <InputMoney
                 v-model="formData.serviceFee"
                 @input="hasChange = true"
-                class="bg-white rounded-sm border-[1px] w-full outline-none"
+                class="bg-white rounded-sm border-1px w-full outline-none"
               />
             </div>
           </div>
@@ -108,7 +108,7 @@
               <InputMoney
                 v-model="formData.decreaseBill"
                 @input="hasChange = true"
-                class="bg-white rounded-sm border-[1px] w-full outline-none"
+                class="bg-white rounded-sm border-1px w-full outline-none"
               />
             </div>
           </div>
@@ -120,7 +120,7 @@
               <InputMoney
                 v-model="formData.vat"
                 @input="hasChange = true"
-                class="bg-white rounded-sm border-[1px] w-full outline-none"
+                class="bg-white rounded-sm border-1px w-full outline-none"
               />
             </div>
           </div>
@@ -131,7 +131,7 @@
             <div>
               <input
                 :value="$numberWithCommas(totalBill)"
-                class="bg-gray-300 rounded-sm border-[1px] w-full outline-none"
+                class="bg-gray-300 rounded-sm border-1px w-full outline-none"
                 disabled
               />
             </div>
@@ -145,7 +145,7 @@
             @input="hasChange = true"
             type="text"
             placeholder="Nhập mã hoặc tên..."
-            class="outline-none rounded-md border-[1px] px-2 py-1 w-full"
+            class="outline-none rounded-md border-1px px-2 py-1 w-full"
           />
         </div>
         <div class="flex flex-wrap -mx-[4px]">
@@ -154,28 +154,30 @@
             :key="`product-item-${pIndex}`"
             class="w-1/2 md:w-1/4 xl:w-1/6 px-[4px] mb-[8px]"
           >
-            <div
-              class="border-[1px] border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative"
-              :class="checkIsChecked(product) ? 'border-green-500' : 'border-blue-300 border-b-cyan-600'"
-              @click="addItem(product)"
-            >
-              <img
-                v-if="checkIsChecked(product)"
-                :src="CheckedIcon"
-                alt=""
-                class="absolute -top-1 -right-1"
-                width="20"
-              />
+            <div class="border-1px rounded-md" :class="checkIsChecked(product) ? 'border-green-500' : 'border-white'">
               <div
-                class="flex-[0_0_50px] h-[100px] bg-cover bg-center bg-no-repeat"
-                :style="`background-image: url(${product.image})`"
-              ></div>
-              <div class="flex-1 flex flex-col p-1">
-                <div class="flex-1 font-semibold">{{ product.name }}</div>
-                <div>
-                  <div class="text-blue-400">{{ product.unit }}</div>
-                  <div class="text-sm text-red-500 font-semibold">
-                    {{ product.price }}
+                class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative"
+                :class="checkIsChecked(product) ? 'border-green-500' : 'border-blue-300 border-b-cyan-600'"
+                @click="addItem(product)"
+              >
+                <img
+                  v-if="checkIsChecked(product)"
+                  :src="CheckedIcon"
+                  alt=""
+                  class="absolute -top-1 -right-1 bg-white rounded-full"
+                  width="20"
+                />
+                <div
+                  class="flex-[0_0_50px] h-[100px] bg-cover bg-center bg-no-repeat"
+                  :style="`background-image: url(${product.image})`"
+                ></div>
+                <div class="flex-1 flex flex-col p-1">
+                  <div class="flex-1 font-semibold">{{ product.name }}</div>
+                  <div>
+                    <div class="text-blue-400">{{ product.unit }}</div>
+                    <div class="text-sm text-red-500 font-semibold">
+                      {{ product.price }}
+                    </div>
                   </div>
                 </div>
               </div>

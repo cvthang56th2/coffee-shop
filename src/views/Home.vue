@@ -107,7 +107,7 @@ const onSavePayment = () => {
         v-model="keyword"
         type="text"
         placeholder="Nhập mã hoặc tên bàn..."
-        class="w-full xl:w-1/3 border-[1px] border-blue-400 rounded-sm p-2"
+        class="w-full xl:w-1/3 border-1px border-blue-400 rounded-sm p-2"
       />
     </div>
     <div class="flex-1 overflow-y-auto p-1">
@@ -136,7 +136,7 @@ const onSavePayment = () => {
               "
             >
               <div
-                class="border-[1px] rounded-md bg-white cursor-pointer hover:shadow-md hover:bg-cyan-50 relative select-none"
+                class="border-1px rounded-md bg-white cursor-pointer hover:shadow-md hover:bg-cyan-50 relative select-none"
                 @click="selectedTable = table"
                 @dblclick="openPopupOrder(table)"
                 :class="

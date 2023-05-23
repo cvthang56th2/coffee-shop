@@ -16,3 +16,9 @@
     </main>
   </div>
 </template>
+
+<style>
+.border-1px {
+  border-width: 1px;
+}
+</style>
