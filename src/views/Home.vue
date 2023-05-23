@@ -19,6 +19,7 @@ const listTables = ref(
     ];
   }, [])
 );
+const listTablesEmpty = computed(() => listTables.value.filter(e => !e.bill))
 const computedListTables = computed(() => {
   let result = JSON.parse(JSON.stringify(listTables.value))
   if (keyword.value) {
@@ -42,8 +43,8 @@ const groupedTables = computed(() => {
   }));
 });
 const statisticCurrent = computed(() => {
-  const totalHaveCustomer = listTables.value.filter(e => e.bill).length
-  const totalEmpty = listTables.value.length - totalHaveCustomer
+  const totalEmpty = listTablesEmpty.value.length
+  const totalHaveCustomer = listTables.value.length - totalEmpty
   return {
     totalHaveCustomer,
     totalEmpty,
@@ -62,6 +63,15 @@ const onOrderSaved = (bill) => {
   selectedTable.value.bill = bill
 }
 
+const onChangeTable = (toTableId) => {
+  const tableIndex = listTables.value.findIndex(e => e.id === toTableId)
+  if (tableIndex !== -1) {
+    listTables.value[tableIndex].bill = selectedTable.value.bill
+    delete selectedTable.value.bill
+    selectedTable.value = listTables.value[tableIndex]
+  }
+}
+
 </script>
 <template>
   <div class="flex flex-col h-full">
@@ -75,23 +85,23 @@ const onOrderSaved = (bill) => {
         </div>
         <button
           :disabled="!selectedTable"
-          :class="selectedTable ? '' : 'opacity-30'"
+          :class="!selectedTable ? 'opacity-30' : ''"
           class="w-[70px] h-[70px] flex items-center justify-center text-white bg-green-500 font-bold rounded-md mr-4"
           @click="openPopupOrder(selectedTable)"
         >
           Chọn món
         </button>
         <button
-          :disabled="!selectedTable"
-          :class="selectedTable ? '' : 'opacity-30'"
+          :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
+          :class="!selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''"
           class="w-[70px] h-[70px] flex items-center justify-center text-white bg-purple-500 font-bold rounded-md mr-4"
           @click="isShowPopupChangeTable = true"
         >
           Chuyển bàn
         </button>
         <button
-          :disabled="!selectedTable"
-          :class="selectedTable ? '' : 'opacity-30'"
+          :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
+          :class="!selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''"
           class="w-[70px] h-[70px] flex items-center justify-center text-white bg-pink-500 font-bold rounded-md mr-4"
         >
           Thanh toán
@@ -183,6 +193,6 @@ const onOrderSaved = (bill) => {
       </div>
     </div>
     <PopupOrder v-model="isShowPopupOrder" :currentTable="selectedTable || {}" @saved="onOrderSaved" />
-    <PopupChangeTable v-model="isShowPopupChangeTable" :currentTable="selectedTable || {}" />
+    <PopupChangeTable v-model="isShowPopupChangeTable" :currentTable="selectedTable || {}" :emptyTables="listTablesEmpty" @saved="onChangeTable" />
   </div>
 </template>

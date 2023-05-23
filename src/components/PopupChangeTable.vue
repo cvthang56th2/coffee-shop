@@ -14,7 +14,7 @@
       <div class="flex">
         <div class="pr-4 w-1/3 font-semibold">Tới bàn:</div>
         <div class="w-2/3">
-          <v-select :options="[1,2,3]" label="title" appendToBody></v-select>
+          <v-select v-model="changeToTable" :options="emptyTables" :reduce="country => country.id" label="name" appendToBody></v-select>
         </div>
       </div>
     </div>
@@ -39,6 +39,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    emptyTables: {
+      type: Array,
+      default: () => ([])
+    }
   },
   components: {
     Popup,
@@ -47,18 +51,21 @@ export default {
   watch: {
     modelValue(v) {
       this.isShow = v
+      this.changeToTable = null
     },
   },
   computed: {
   },
   data: () => ({
-    isShow: false
+    isShow: false,
+    changeToTable: null
   }),
   methods: {
     hide () {
       this.$emit("update:modelValue", false);
     },
     changeTable () {
+      this.$emit('saved', this.changeToTable)
     }
   },
 };
