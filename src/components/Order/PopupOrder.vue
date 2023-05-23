@@ -18,7 +18,7 @@
     <div class="flex flex-wrap h-[calc(100vh_-_170px)] overflow-y-auto">
       <div class="flex flex-col h-full overflow-y-auto w-full xl:w-4/12 bg-blue-400 p-2">
         <div class="mb-2 flex-0 text-white flex items-center justify-between">
-          <div>
+          <div class="font-bold text-xl">
             Danh sách món
           </div>
           <div>

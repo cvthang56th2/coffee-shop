@@ -6,20 +6,32 @@ import HaveCustomerImg from "../assets/images/icons8-restaurant-table.png";
 import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
 import { ref, computed } from "vue";
 
+const keyword = ref(null)
 const listTables = ref(
   [1, 2, 3].reduce((resultArr, group) => {
     return [
       ...resultArr,
       ...[...Array(24).keys()].map((e) => ({
         id: `group-${group}-table-${e}`,
-        name: `B-${e}`,
+        name: `B-${e + 1}`,
         group,
       })),
     ];
   }, [])
 );
+const computedListTables = computed(() => {
+  let result = JSON.parse(JSON.stringify(listTables.value))
+  if (keyword.value) {
+    const regex = new RegExp(keyword.value, "gi");
+    result = result.filter(
+      (e) =>
+        (e.id && String(e.id).match(regex)) || (e.name && String(e.name).match(regex))
+    );
+  }
+  return result
+})
 const groupedTables = computed(() => {
-  const groupedTablesObject = listTables.value.reduce((resultObj, table) => {
+  const groupedTablesObject = computedListTables.value.reduce((resultObj, table) => {
     resultObj[table.group] = resultObj[table.group] || [];
     resultObj[table.group].push(table);
     return resultObj;
@@ -86,6 +98,7 @@ const onOrderSaved = (bill) => {
         </button>
       </div>
       <input
+        v-model="keyword"
         type="text"
         placeholder="Nhập mã hoặc tên bàn..."
         class="w-full xl:w-1/3 border-[1px] border-blue-400 rounded-sm p-2"
@@ -140,7 +153,7 @@ const onOrderSaved = (bill) => {
                   {{ table.bill ? $formatDate(new Date()) : "" }}
                 </div>
                 <div class="px-2 py-1">
-                  <div class="text-xl font-semibold text-blue-500">B.{{ tIndex }}</div>
+                  <div class="text-xl font-semibold text-blue-500">{{ table.name }}</div>
                   <div class="flex items-end justify-between">
                     <div class="text-red-500 font-semibold">
                       {{ table.bill ? $numberWithCommas(table.bill.total || 0) : '' }}
