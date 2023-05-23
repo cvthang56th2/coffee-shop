@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="modelValue" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
-      <div class="`relative my-6 mx-auto" :style="`width: ${width}`">
+    <div v-if="modelValue" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex shadow-xl" @click="persistent && hide()">
+      <div class="`relative my-6 mx-auto" :style="`width: ${width}`" @click.stop>
         <!--content-->
         <div class="border-0 rounded-md shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <!--header-->
@@ -11,7 +11,7 @@
                 {{ title }}
               </h4>
             </slot>
-            <button class="text-5xl font-bold text-red-500 hover:text-red-300 absolute top-[-16px] right-0" @click="hide()">
+            <button class="text-5xl font-bold text-red-500 hover:text-black ease-linear transition-all duration-150 absolute top-[-16px] right-0" @click="hide()">
               ×
             </button>
           </div>
@@ -21,9 +21,11 @@
           </div>
           <!--footer-->
           <div class="border-t-2 text-center rounded-b">
-            <button class="text-green-500 hover:bg-green-500 hover:text-white background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b" type="button" @click="onClickSave()">
-              Xác nhận
-            </button>
+            <slot name="buttons">
+              <button class="bg-green-500 text-white hover:bg-green-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b" type="button" @click="onClickSave()">
+                Xác nhận
+              </button>
+            </slot>
           </div>
         </div>
       </div>
@@ -51,6 +53,10 @@ export default {
     save: {
       type: Function,
       default: () => (() => {})
+    },
+    persistent: {
+      type: Boolean,
+      default: false
     },
     closeOnSave: {
       type: Boolean,

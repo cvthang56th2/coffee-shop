@@ -3,4 +3,17 @@ import './style.css'
 import App from './App.vue'
 import router from './router' // <---
 
-createApp(App).use(router).mount('#app')
+import VueSweetAlert from 'vue-sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
+
+import { formatDate, formatCurrency, numberWithCommas } from './utils/utils'
+const app = createApp(App)
+
+app.config.globalProperties.$formatDate = formatDate
+app.config.globalProperties.$formatCurrency = formatCurrency
+app.config.globalProperties.$numberWithCommas = numberWithCommas
+
+app
+.use(VueSweetAlert)
+.use(router)
+.mount('#app')
