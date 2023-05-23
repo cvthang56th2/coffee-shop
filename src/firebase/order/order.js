@@ -13,7 +13,7 @@ import { db } from '../config'
 import { uid } from 'uid'
 import { snapshotToArray } from '../../utils/utils'
 
-const ORDER = 'order'
+const ORDER = 'orders'
 
 class orderServices {
   async createOrder(data) {

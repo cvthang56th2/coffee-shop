@@ -1,15 +1,15 @@
 <script setup>
 import Favicon from './assets/images/favicon.png'
 import { ref, inject, onMounted } from 'vue'
-import { useCookies } from "vue3-cookies";
+import AuthServices from './firebase/auth/auth'
+import UserServices from './firebase/user/user'
 
-const { cookies } = useCookies();
 const swal = inject('$swal')
 const isLogin = ref(false)
 const formData = ref({
-  userName: 'admin'
+  email: 'admin@coffee.com'
 })
-const login = () => {
+const login = async () => {
   const Toast = swal.mixin({
     toast: true,
     position: 'top-end',
@@ -21,15 +21,23 @@ const login = () => {
       toast.addEventListener('mouseleave', swal.resumeTimer)
     }
   })
-  const { userName, password } = formData.value
-  if (userName === 'admin' && password === '180599') {
+  
+  try {
+    const { email, password } = formData.value
+    if (!email || !password) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Chưa nhập mật khẩu'
+      })
+      return
+    }
+    await AuthServices.loginWithEmail(email, password)
     isLogin.value = true
-    cookies.set('__IS_LOGIN__', 'YESSSSSSSSSSSSSSSSSS_PLEASEEEEEEE')
     Toast.fire({
       icon: 'success',
       title: 'Đăng nhập thành công!'
     })
-  } else {
+  } catch (error) {
     Toast.fire({
       icon: 'error',
       title: 'Sai mật khẩu'
@@ -45,20 +53,28 @@ const logout = () => {
   }).then((result) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
+      AuthServices.logout()
       isLogin.value = false
-      cookies.set('__IS_LOGIN__', null)
     }
   })
 }
+const isMounted = ref(false)
 onMounted(() => {
-  if (cookies.get('__IS_LOGIN__') === 'YESSSSSSSSSSSSSSSSSS_PLEASEEEEEEE') {
-    isLogin.value = true
-  }
+  AuthServices.onAuthStateChanged(async (res) => {
+    const { uid } = res || {}
+    if (uid) {
+      const userInfo = await UserServices.getUserById(uid)
+      if (userInfo) {
+        isLogin.value = true
+      }
+    }
+    isMounted.value = true
+  })
 })
 </script>
 
 <template>
-  <div class="h-screen flex flex-col">
+  <div v-if="isMounted" class="h-screen flex flex-col">
     <template v-if="isLogin">
       <header class="border-b-2 mb-2 flex-0 relative">
         <div class="flex justify-center text-3xl py-2 font-bold text-amber-600">
@@ -105,14 +121,14 @@ onMounted(() => {
         <div class="xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
           <h1 class="text-3xl mb-5 text-center">Đăng nhập vào trang Quản lý</h1>
           <form @submit.stop="login">
-            <!-- Username input -->
+            <!-- email input -->
             <div class="mb-6">
               <input
-                v-model="formData.userName"
+                v-model="formData.email"
                 disabled
                 type="text"
                 class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-gray-100 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                placeholder="Tài khoản"
+                placeholder="Email"
               />
             </div>
 
@@ -140,10 +156,54 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  
+  <div v-else class="h-screen w-screen flex items-center justify-center">
+    <div class="load-3 flex">
+      <div class="flex justify-center">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style>
 .border-1px {
   border-width: 1px;
+}
+
+.line {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  margin: 5px;
+}
+
+.load-3 .line:nth-last-child(1) {
+  background-color: rgb(213, 85, 85);
+  animation: loadingC 0.8s 0.1s linear infinite;
+}
+
+.load-3 .line:nth-last-child(2) {
+  background-color: rgb(22, 97, 22);
+  animation: loadingC 0.8s 0.2s linear infinite;
+}
+
+.load-3 .line:nth-last-child(3) {
+  background-color: rgb(54, 184, 240);
+  animation: loadingC 0.8s 0.3s linear infinite;
+}
+@keyframes loadingC {
+  0 {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 15px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 </style>
