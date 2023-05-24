@@ -430,7 +430,7 @@ toLowerCaseNonAccentVietnamese(str) {
       if (this.hasChange) {
         this.$swal
           .fire({
-            title: "Đã có vài thay đổi tên form này, bạn có chắc muốn tắt không?",
+            title: "Đã có vài thay đổi trên form này, bạn có chắc muốn tắt không?",
             showCancelButton: true,
             cancelButtonText: "Không",
             confirmButtonText: "Có",
