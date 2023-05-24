@@ -202,6 +202,7 @@
         >
           <div class="p-2 rounded mb-2 border-b-2 bg-white flex-0">
             <input
+              id="search-product-keyword"
               v-model="keyword"
               @input="hasChange = true"
               type="text"
@@ -321,6 +322,13 @@ export default {
             this.billTime = this.$formatDate(new Date(), "DD/MM/YYYY hh:mm:ss");
           }, 100);
         }
+        
+        this.$nextTick(() => {
+          const focusEl = document.querySelector('#search-product-keyword')
+          if (focusEl && typeof focusEl.focus === 'function') {
+            focusEl.focus()
+          }
+        })
       }
     },
   },

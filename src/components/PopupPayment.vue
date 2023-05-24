@@ -1,6 +1,90 @@
 <template>
   <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" >
     <div class="p-4">
+      <div class="flex flex-wrap mb-4 pb-2 flex-0 border-b-2">
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Phí D.Vụ
+          </div>
+          <div>
+            <InputMoney
+              v-model="formData.serviceFee"
+              @input="hasChange = true"
+              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Giảm bill
+          </div>
+          <div class="flex items-center">
+            <InputMoney
+              v-model="formData.decreaseBill"
+              @input="hasChange = true"
+              :max="formData.decreaseBillUnit === '%' ? 100 : summaryBill"
+              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+            />
+            <v-select
+              v-model="formData.decreaseBillUnit"
+              @update:modelValue="onChangeDescreaseBillUnit"
+              :options="['VND', '%']"
+              :clearable="false"
+              appendToBody
+              class="custom-select bg-white rounded-sm w-full outline-none ml-1"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Thuế
+          </div>
+          <div>
+            <InputMoney
+              v-model="formData.vat"
+              @input="hasChange = true"
+              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Tổng tiền
+          </div>
+          <div>
+            <input
+              :value="$numberWithCommas(totalBill)"
+              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+              disabled
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Khách đưa
+          </div>
+          <div>
+            <InputMoney
+              id="clientMoney"
+              v-model="formData.clientMoney"
+              @input="hasChange = true"
+              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Trả lại
+          </div>
+          <div>
+            <input
+              :value="$numberWithCommas(refundMoney)"
+              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
       <div id="bill-html">
         <div class="text-center font-bold text-2xl mb-2">Ngâu Coffee</div>
         <div class="text-center italic">Address</div>
@@ -79,79 +163,6 @@
         </div>
         <div class="pt-1 text-center italic">Cảm ơn quý khách, hẹn gặp lại!</div>
       </div>
-      <div class="flex flex-wrap mt-2 pt-2 flex-0 border-t-2">
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
-          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
-            Phí D.Vụ
-          </div>
-          <div>
-            <InputMoney
-              v-model="formData.serviceFee"
-              @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
-            />
-          </div>
-        </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
-          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
-            Giảm bill
-          </div>
-          <div class="flex items-center">
-            <InputMoney
-              v-model="formData.decreaseBill"
-              @input="hasChange = true"
-              :max="formData.decreaseBillUnit === '%' ? 100 : summaryBill"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
-            />
-            <v-select
-              v-model="formData.decreaseBillUnit"
-              @update:modelValue="onChangeDescreaseBillUnit"
-              :options="['VND', '%']"
-              :clearable="false"
-              appendToBody
-              class="custom-select bg-white rounded-sm w-full outline-none ml-1"
-            />
-          </div>
-        </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
-          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
-            Thuế
-          </div>
-          <div>
-            <InputMoney
-              v-model="formData.vat"
-              @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
-            />
-          </div>
-        </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
-        </div>
-        <div class="w-full lg:w-1/2 flex px-2">
-          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
-            Khách đưa
-          </div>
-          <div>
-            <InputMoney
-              v-model="formData.clientMoney"
-              @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
-            />
-          </div>
-        </div>
-        <div class="w-full lg:w-1/2 flex px-2">
-          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
-            Tổng tiền
-          </div>
-          <div>
-            <input
-              :value="$numberWithCommas(totalBill)"
-              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
-              disabled
-            />
-          </div>
-        </div>
-      </div>
     </div>
     <template v-slot:buttons>
       <div class="flex justify-end p-3">
@@ -218,6 +229,12 @@ export default {
         this.hasChange = false
         const { serviceFee = 0, vat = 0, decreaseBill = 0, decreaseBillUnit = 'VND', clientMoney = 0 } = this.formData;
         this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
+        this.$nextTick(() => {
+          const clientInputEl = document.querySelector('#clientMoney')
+          if (clientInputEl && typeof clientInputEl.focus === 'function') {
+            clientInputEl.focus()
+          }
+        })
       }
     },
   },
