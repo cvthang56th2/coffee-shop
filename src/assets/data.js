@@ -241,10 +241,104 @@ export const listTables = [
   },
 ]
 
-export const products = Array.from(Array(50).keys()).map((e) => ({
-  id: `product-${e}`,
-  name: `Sản phẩm ${e}`,
-  price: (e + 1) * 1000,
-  image: "https://via.placeholder.com/50x100",
-  unit: e % 2 ? "Lon" : "Cái",
+export const products = [
+  {
+    name: `Cafe đen`,
+    price: 18000,
+    image: "/images/cafe-den.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Cafe sữa`,
+    price: 20000,
+    image: "/images/cafe-sua.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Bạc Xỉu`,
+    price: 25000,
+    image: "/images/bac-xiu.png",
+    unit: 'Ly',
+  },
+  {
+    name: `CaCao Sữa`,
+    price: 25000,
+    image: "/images/cacao-sua.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Matcha Sữa`,
+    price: 25000,
+    image: "/images/matcha-sua.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Nước cam`,
+    price: 25000,
+    image: "/images/nuoc-cam.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Thơm ép`,
+    price: 25000,
+    image: "/images/thom-ep.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Ổi ép`,
+    price: 25000,
+    image: "/images/oi-ep.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Táo ép`,
+    price: 25000,
+    image: "/images/tao-ep.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Yogurt trái cây`,
+    price: 30000,
+    image: "/images/yogurt-trai-cay.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Trà đào hạt chia`,
+    price: 3000,
+    image: "/images/tra-dao-hat-chia.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Trà vải hạt chia`,
+    price: 3000,
+    image: "/images/tra-vai-hat-chia.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Trà ổi hồng`,
+    price: 30000,
+    image: "/images/tra-oi-hong.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Trà đá me`,
+    price: 30000,
+    image: "/images/tra-da-me.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Trà trái cây`,
+    price: 30000,
+    image: "/images/tra-trai-cay.png",
+    unit: 'Ly',
+  },
+  {
+    name: `Trà gừng`,
+    price: 20000,
+    image: "/images/tra-gung.png",
+    unit: 'Ly',
+  },
+].map((e, i) => ({
+  ...e,
+  id: `product-${i + 1}`,
 }))

@@ -231,6 +231,11 @@
                     @click="addItem(product)"
                   >
                     <div
+                      class="absolute -bottom-1 left-0 w-[25px] h-[25px] font-bold"
+                    >
+                      #{{ pIndex + 1 }}
+                    </div>
+                    <div
                       v-if="product.isChecked"
                       class="absolute -top-1 -left-1 w-[25px] h-[25px] font-bold bg-green-500 text-white rounded-full flex justify-center items-center"
                     >
