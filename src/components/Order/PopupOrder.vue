@@ -31,10 +31,10 @@
       </div>
     </template>
     <div class="lg:hidden flex w-full">
-      <button @click="currentTab = 'list'" class="w-1/2 py-1 uppercase text-center font-bold bg-yellow-500 text-white border-r-[1px] text-sm border-white">
+      <button @click="currentTab = 'list'" class="w-1/2 py-1 uppercase text-center font-bold bg-yellow-500 text-white border-r-[1px] text-sm border-white" :class="currentTab === 'list' ? 'border-t-[4px_solid_green]' : 'border-t-[4px_solid_white]'">
         Danh sách món
       </button>
-      <button @click="currentTab = 'menu'" class="w-1/2 py-1 uppercase text-center font-bold bg-blue-500 text-white border-l-[1px] text-sm border-white">
+      <button @click="currentTab = 'menu'" class="w-1/2 py-1 uppercase text-center font-bold bg-blue-500 text-white border-l-[1px] text-sm border-white" :class="currentTab === 'menu' ? 'border-t-[4px_solid_green]' : 'border-t-[4px_solid_white]'">
         Thực đơn
       </button>
     </div>
