@@ -10,7 +10,7 @@
     <div class="p-4">
       <div class="flex mb-3">
         <div class="pr-4 w-1/3 font-semibold">Từ:</div>
-        <div class="w-2/3 font-bold px-2">bàn {{ currentTable.name }} - khu {{ currentTable.group }}</div>
+        <div class="w-2/3 font-bold px-2">khu {{ currentTable.group }} - {{ currentTable.name }}</div>
       </div>
       <div class="flex">
         <div class="pr-4 w-1/3 font-semibold">Tới:</div>
@@ -56,7 +56,7 @@ export default {
     computedEmptyTables () {
       return this.emptyTables.map(e => ({
         ...e,
-        formattedName: `bàn ${ e.name } - khu ${ e.group }`
+        formattedName: `khu ${ e.group } - bàn ${ e.name }`
       }))
     }
   },
