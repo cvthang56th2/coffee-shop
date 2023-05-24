@@ -30,171 +30,175 @@
         </div>
       </div>
     </template>
-    <div class="lg:hidden flex w-full">
-      <button @click="currentTab = 'list'" class="w-1/2 py-1 uppercase text-center font-bold bg-yellow-500 text-white border-r-[1px] text-sm border-white" :class="currentTab === 'list' ? 'underline' : ''">
-        Danh sách món
-      </button>
-      <button @click="currentTab = 'menu'" class="w-1/2 py-1 uppercase text-center font-bold bg-blue-500 text-white border-l-[1px] text-sm border-white" :class="currentTab === 'menu' ? 'underline' : ''">
-        Thực đơn
-      </button>
-    </div>
-    <div class="flex flex-wrap h-[calc(100vh_-_200px)] lg:h-[calc(100vh_-_170px)] overflow-y-auto">
-      <div class="flex flex-col h-full overflow-y-auto w-full lg:w-4/12 bg-blue-400 p-2 lg:block" :class="currentTab === 'list' ? '' : 'hidden'">
-        <div class="mb-2 flex-0 text-white flex items-center justify-between">
-          <div class="font-bold text-xl">
-            Danh sách món
+    <div class="h-[calc(100vh_-_270px)] lg:h-[calc(100vh_-_150px)] overflow-y-auto flex flex-col">
+      <div class="lg:hidden flex w-full flex-0">
+        <button @click="currentTab = 'list'" class="w-1/2 py-1 uppercase text-center font-bold bg-yellow-500 text-white border-r-[1px] text-sm border-white" :class="currentTab === 'list' ? 'underline' : ''">
+          Danh sách món
+        </button>
+        <button @click="currentTab = 'menu'" class="w-1/2 py-1 uppercase text-center font-bold bg-blue-500 text-white border-l-[1px] text-sm border-white" :class="currentTab === 'menu' ? 'underline' : ''">
+          Thực đơn
+        </button>
+      </div>
+      <div class="flex flex-wrap overflow-y-auto flex-1">
+        <div class="flex flex-col h-full overflow-y-auto w-full lg:w-4/12 bg-blue-400 p-2 lg:block" :class="currentTab === 'list' ? '' : 'hidden'">
+          <div class="mb-2 flex-0 text-white flex items-center justify-between">
+            <div class="font-bold text-xl">
+              Danh sách món
+            </div>
+            <div>
+              <span class="text-md font-semibold">Tổng: </span>
+              <span class="text-xl font-bold">{{ $numberWithCommas(totalItems) }}</span>
+            </div>
           </div>
-          <div>
-            <span class="text-md font-semibold">Tổng: </span>
-            <span class="text-xl font-bold">{{ $numberWithCommas(totalItems) }}</span>
-          </div>
-        </div>
-        <div class="flex flex-col overflow-y-auto flex-1 rounded-md">
-          <div class="flex border-b-[1px] bg-yellow-500 font-semibold flex-0 text-white">
-            <div class="w-3/12 p-[2px] lg:p-1 border-r-[1px] text-center">Tên</div>
-            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">S.L</div>
-            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">Giá</div>
-            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">Giảm</div>
-            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">T.Tiền</div>
-            <div class="w-1/12 p-[2px] lg:p-1 text-center"></div>
-          </div>
-          <div v-if="formData.items.length" class="flex-1 overflow-y-auto">
-            <div
-              v-for="(item, index) in formData.items"
-              class="bg-white text-black text-sm"
-              :key="`order-item-${index}`"
-            >
-              <div class="flex items-center border-b-[1px]">
-                <div class="w-3/12 p-[2px] lg:p-1 border-r-[1px]">{{ item.name }}</div>
-                <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px]">
-                  <input
-                    :id="`input-quantity-${index}`"
-                    v-model="item.quantity"
-                    @input="hasChange = true"
-                    type="number"
-                    min="0"
-                    class="outline-none max-w-full border-1px rounded-sm"
-                  />
-                </div>
-                <div
-                  class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-right truncate"
-                  :title="$numberWithCommas(item.price)"
-                >
-                  {{ $numberWithCommas(item.price) }}
-                </div>
-                <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px]">
-                  <InputMoney
-                    v-model="item.decrease"
-                    @input="hasChange = true"
-                    class="outline-none max-w-full border-1px rounded-sm"
-                  />
-                </div>
-                <div
-                  class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-right truncate"
-                  :title="$numberWithCommas(getItemTotal(item))"
-                >
-                  {{ $numberWithCommas(getItemTotal(item)) }}
-                </div>
-                <div class="w-1/12 p-[2px] lg:p-1 text-center">
-                  <button
-                    class="text-red-500 font-semibold hover:text-black"
-                    @click="removeItem(index)"
+          <div class="flex flex-col overflow-y-auto flex-1 rounded-md">
+            <div class="flex border-b-[1px] bg-yellow-500 font-semibold flex-0 text-white">
+              <div class="w-3/12 p-[2px] lg:p-1 border-r-[1px] text-center">Tên</div>
+              <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">S.L</div>
+              <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">Giá</div>
+              <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">Giảm</div>
+              <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">T.Tiền</div>
+              <div class="w-1/12 p-[2px] lg:p-1 text-center"></div>
+            </div>
+            <div v-if="formData.items.length" class="flex-1 overflow-y-auto">
+              <div
+                v-for="(item, index) in formData.items"
+                class="bg-white text-black text-sm"
+                :key="`order-item-${index}`"
+              >
+                <div class="flex items-center border-b-[1px]">
+                  <div class="w-3/12 p-[2px] lg:p-1 border-r-[1px]">{{ item.name }}</div>
+                  <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px]">
+                    <input
+                      :id="`input-quantity-${index}`"
+                      v-model="item.quantity"
+                      @input="hasChange = true"
+                      type="number"
+                      min="0"
+                      class="outline-none max-w-full border-1px rounded-sm"
+                    />
+                  </div>
+                  <div
+                    class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-right truncate"
+                    :title="$numberWithCommas(item.price)"
                   >
-                    Xóa
-                  </button>
+                    {{ $numberWithCommas(item.price) }}
+                  </div>
+                  <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px]">
+                    <InputMoney
+                      v-model="item.decrease"
+                      @input="hasChange = true"
+                      class="outline-none max-w-full border-1px rounded-sm"
+                    />
+                  </div>
+                  <div
+                    class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-right truncate"
+                    :title="$numberWithCommas(getItemTotal(item))"
+                  >
+                    {{ $numberWithCommas(getItemTotal(item)) }}
+                  </div>
+                  <div class="w-1/12 p-[2px] lg:p-1 text-center">
+                    <button
+                      class="text-red-500 font-semibold hover:text-black"
+                      @click="removeItem(index)"
+                    >
+                      Xóa
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+            <div v-else class="bg-white text-black text-center italic p-5">
+              Chưa có sản phẩm nào được chọn.
+            </div>
           </div>
-          <div v-else class="bg-white text-black text-center italic p-5">
-            Chưa có sản phẩm nào được chọn.
+          <div class="flex flex-wrap pt-4 flex-0 border-t-2">
+            <div class="w-full lg:w-1/2 flex px-2 mb-2">
+              <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
+                Phí D.Vụ
+              </div>
+              <div>
+                <InputMoney
+                  v-model="formData.serviceFee"
+                  @input="hasChange = true"
+                  class="bg-white rounded-sm border-1px w-full outline-none"
+                />
+              </div>
+            </div>
+            <div class="w-full lg:w-1/2 flex px-2 mb-2">
+              <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
+                Giảm bill
+              </div>
+              <div>
+                <InputMoney
+                  v-model="formData.decreaseBill"
+                  @input="hasChange = true"
+                  class="bg-white rounded-sm border-1px w-full outline-none"
+                />
+              </div>
+            </div>
+            <div class="w-full lg:w-1/2 flex px-2 mb-2">
+              <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
+                Thuế
+              </div>
+              <div>
+                <InputMoney
+                  v-model="formData.vat"
+                  @input="hasChange = true"
+                  class="bg-white rounded-sm border-1px w-full outline-none"
+                />
+              </div>
+            </div>
+            <div class="w-full lg:w-1/2 flex px-2">
+              <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
+                Tổng tiền
+              </div>
+              <div>
+                <input
+                  :value="$numberWithCommas(totalBill)"
+                  class="bg-gray-300 rounded-sm border-1px w-full outline-none"
+                  disabled
+                />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex flex-wrap pt-4 flex-0 border-t-2">
-          <div class="w-full lg:w-1/2 flex px-2 mb-2">
-            <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
-              Phí D.Vụ
-            </div>
-            <div>
-              <InputMoney
-                v-model="formData.serviceFee"
-                @input="hasChange = true"
-                class="bg-white rounded-sm border-1px w-full outline-none"
-              />
-            </div>
+        <div class="w-full lg:w-8/12 p-2 h-full overflow-y-auto flex flex-col" :class="currentTab === 'menu' ? '' : 'hidden'">
+          <div class="p-2 rounded mb-2 border-b-2 bg-white flex-0">
+            <input
+              v-model="keyword"
+              @input="hasChange = true"
+              type="text"
+              placeholder="Nhập mã hoặc tên..."
+              class="outline-none rounded-md border-1px px-2 py-1 w-full"
+            />
           </div>
-          <div class="w-full lg:w-1/2 flex px-2 mb-2">
-            <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
-              Giảm bill
-            </div>
-            <div>
-              <InputMoney
-                v-model="formData.decreaseBill"
-                @input="hasChange = true"
-                class="bg-white rounded-sm border-1px w-full outline-none"
-              />
-            </div>
-          </div>
-          <div class="w-full lg:w-1/2 flex px-2 mb-2">
-            <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
-              Thuế
-            </div>
-            <div>
-              <InputMoney
-                v-model="formData.vat"
-                @input="hasChange = true"
-                class="bg-white rounded-sm border-1px w-full outline-none"
-              />
-            </div>
-          </div>
-          <div class="w-full lg:w-1/2 flex px-2">
-            <div class="flex-[0_0_100px] text-right pr-2 text-white font-semibold">
-              Tổng tiền
-            </div>
-            <div>
-              <input
-                :value="$numberWithCommas(totalBill)"
-                class="bg-gray-300 rounded-sm border-1px w-full outline-none"
-                disabled
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="w-full lg:w-8/12 p-2 h-full overflow-auto flex flex-col lg:block" :class="currentTab === 'menu' ? '' : 'hidden'">
-        <div class="p-2 rounded mb-2 border-b-2 bg-white">
-          <input
-            v-model="keyword"
-            @input="hasChange = true"
-            type="text"
-            placeholder="Nhập mã hoặc tên..."
-            class="outline-none rounded-md border-1px px-2 py-1 w-full"
-          />
-        </div>
-        <div class="flex flex-wrap -mx-[4px]">
-          <div
-            v-for="(product, pIndex) in computedProducts"
-            :key="`product-item-${pIndex}`"
-            class="w-1/2 md:w-1/4 xl:w-1/6 px-[4px] mb-[8px]"
-          >
-            <div class="border-1px rounded-md h-full" :class="product.isChecked ? 'border-green-500' : 'border-white'">
+          <div class="flex-1 overflow-x-hidden overflow-y-auto">
+            <div class="flex flex-wrap -mx-[4px]">
               <div
-                class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative select-none h-full items-center"
-                :class="product.isChecked ? 'border-green-500' : 'border-blue-300 border-b-cyan-600'"
-                @click="addItem(product)"
+                v-for="(product, pIndex) in computedProducts"
+                :key="`product-item-${pIndex}`"
+                class="w-1/2 md:w-1/4 xl:w-1/6 px-[4px] mb-[8px]"
               >
-                <div v-if="product.isChecked" class="absolute -top-1 -left-1 w-[25px] h-[25px] font-bold bg-green-500 text-white rounded-full flex justify-center items-center">{{ product.countChecked }}</div>
-                <button v-if="product.isChecked" class="absolute -top-1 -right-1 px-[6px] font-bold bg-red-500 text-white rounded-full hover:bg-purple-500" @click.stop="removeItem(product.checkedIndex)">×</button>
-                <div
-                  class="flex-[0_0_50px] h-[100px] bg-cover bg-center bg-no-repeat"
-                  :style="`background-image: url(${product.image})`"
-                ></div>
-                <div class="flex-1 flex flex-col p-1">
-                  <div class="flex-1 font-semibold mb-2">{{ product.name }}</div>
-                  <div>
-                    <div class="text-blue-400 text-sm font-semibold">{{ product.unit }}</div>
-                    <div class="text-sm text-red-500 font-semibold">
-                      {{ $numberWithCommas(product.price) }}
+                <div class="border-1px rounded-md h-full" :class="product.isChecked ? 'border-green-500' : 'border-white'">
+                  <div
+                    class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative select-none h-full items-center"
+                    :class="product.isChecked ? 'border-green-500' : 'border-blue-300 border-b-cyan-600'"
+                    @click="addItem(product)"
+                  >
+                    <div v-if="product.isChecked" class="absolute -top-1 -left-1 w-[25px] h-[25px] font-bold bg-green-500 text-white rounded-full flex justify-center items-center">{{ product.countChecked }}</div>
+                    <button v-if="product.isChecked" class="absolute -top-1 -right-1 px-[6px] font-bold bg-red-500 text-white rounded-full hover:bg-purple-500" @click.stop="removeItem(product.checkedIndex)">×</button>
+                    <div
+                      class="flex-[0_0_50px] h-[100px] bg-cover bg-center bg-no-repeat"
+                      :style="`background-image: url(${product.image})`"
+                    ></div>
+                    <div class="flex-1 flex flex-col p-1">
+                      <div class="flex-1 font-semibold mb-2">{{ product.name }}</div>
+                      <div>
+                        <div class="text-blue-400 text-sm font-semibold">{{ product.unit }}</div>
+                        <div class="text-sm text-red-500 font-semibold">
+                          {{ $numberWithCommas(product.price) }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
