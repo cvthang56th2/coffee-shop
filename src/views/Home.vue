@@ -143,10 +143,21 @@ onMounted(() => {
       selectedTable.value = listTables.value.find(e => e.id === selectedTable.value.id)
     }
   }, { status: ORDER_STATUS.pending })
+
+  for (const el of document.querySelectorAll('.scroll-to-button')) {
+    if (el.getAttribute('target-el')) {
+      const target = document.querySelector(el.getAttribute('target-el'))
+      if (target) {
+        el.addEventListener('click', () => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        })
+      }
+    }
+  }
 })
 </script>
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex justify-center flex-col h-full">
     <div class="flex flex-wrap items-center justify-between pb-2 border-b-2 flex-0 px-4">
       <div
         class="w-full xl:w-2/3 mb-2 xl:mb-0 lg:flex justify-center xl:justify-start items-center"
@@ -209,18 +220,32 @@ onMounted(() => {
           </button>
         </div>
       </div>
-      <input
-        v-model="keyword"
-        type="text"
-        placeholder="Nhập mã hoặc tên bàn..."
-        class="w-full xl:w-1/3 border-1px border-blue-400 rounded-sm p-1 md:p-2"
-      />
+      <div class="flex flex-wrap w-full xl:w-1/3">
+        <input
+          v-model="keyword"
+          type="text"
+          placeholder="Nhập mã hoặc tên bàn..."
+          class="flex-1 border-1px border-blue-400 rounded-sm p-1 md:p-2 mr-2"
+        />
+        <div class="flex flex-0 py-1 justify-center">
+          <button target-el="#group-1" class="px-4 py-1 font-bold rounded-sm text-sm bg-blue-500 text-white mr-2 scroll-to-button">
+            Khu 1
+          </button>
+          <button target-el="#group-2" class="px-4 py-1 font-bold rounded-sm text-sm bg-green-500 text-white mr-2 scroll-to-button">
+            Khu 2
+          </button>
+          <button target-el="#group-3" class="px-4 py-1 font-bold rounded-sm text-sm bg-pink-500 text-white mr-2 scroll-to-button">
+            Khu 3
+          </button>
+        </div>
+      </div>
     </div>
     <div class="flex-1 overflow-y-auto p-2 bg-gray-200">
       <div
         v-for="(group, gIndex) in groupedTables"
         class="p-2 border-[1px] border-b-[4px] border-r-[4px] border-gray-700 mb-4 rounded-xl bg-white"
         :key="`group-${gIndex}`"
+        :id="`group-${group.groupId}`"
       >
         <div
           class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-blue-500 bg-white px-2 py-1 text-center underline"
