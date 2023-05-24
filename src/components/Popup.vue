@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="transition-all duration-300 ease-in-out" :class="modelValue ? 'opacity-1' : 'opacity-0'">
     <div v-if="modelValue" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex shadow-xl" @click="persistent && hide()">
       <div class="`relative my-6 mx-auto max-w-[95vw]" :style="`width: ${width}`" @click.stop>
         <!--content-->

@@ -190,7 +190,7 @@ export default {
             })
             Toast.fire({
               icon: 'success',
-              title: 'Hủy bàn thành công!'
+              title: 'Hủy bill thành công!'
             })
             this.hide()
           }

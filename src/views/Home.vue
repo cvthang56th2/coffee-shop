@@ -102,7 +102,7 @@ const onSavePayment = () => {
 const cancelOrder = () => {
   if (selectedTable.value.bill?.id) {
     swal.fire({
-      title: 'Bạn có chắc muốn hủy bàn này không?',
+      title: 'Bạn có chắc muốn bill bàn này không?',
       showCancelButton: true,
       cancelButtonText: 'Không',
       confirmButtonText: 'Có',
@@ -125,7 +125,7 @@ const cancelOrder = () => {
         })
         Toast.fire({
           icon: 'success',
-          title: 'Hủy bàn thành công!'
+          title: 'Hủy bill thành công!'
         })
       }
     })
@@ -205,7 +205,7 @@ onMounted(() => {
             class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-red-500 hover:bg-red-700 font-bold rounded-md mr-4"
             @click="cancelOrder"
           >
-            Hủy <br class="hidden md:block">bàn
+            Hủy <br class="hidden md:block">bill
           </button>
         </div>
       </div>

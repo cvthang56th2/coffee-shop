@@ -289,7 +289,7 @@ export default {
     },
   },
   data: () => ({
-    currentTab: 'list',
+    currentTab: 'menu',
     timeInterval: null,
     hasChange: false,
     billTime: null,
