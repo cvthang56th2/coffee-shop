@@ -227,7 +227,7 @@ export default {
       this.isShow = v;
       if (v) {
         this.hasChange = false
-        const { serviceFee = 0, vat = 0, decreaseBill = 0, decreaseBillUnit = 'VND', clientMoney = 0 } = this.formData;
+        const { serviceFee = 0, vat = 0, decreaseBill = 0, decreaseBillUnit = 'VND', clientMoney = 0 } = this.currentTable.bill || {};
         this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
         this.$nextTick(() => {
           const clientInputEl = document.querySelector('#clientMoney')
