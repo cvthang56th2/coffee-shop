@@ -79,7 +79,7 @@ onMounted(() => {
       <header class="border-b-2 mb-2 flex-0 relative px-4">
         <div class="flex lg:justify-center text-2xl lg:text-3xl py-2 font-bold text-amber-600">
           <img :src="Favicon" alt="icon" class="w-[30px] lg:w-[40px] mr-2">
-          Coffee Shop
+          Ngâu Coffee
         </div>
         <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 md:px-4 md:py-2" @click="logout">
           Khóa máy
@@ -173,6 +173,25 @@ onMounted(() => {
   border-width: 1px;
 }
 
+.custom-select .vs__selected {
+  margin: 0;
+  padding: 0;
+}
+.custom-select .vs__dropdown-toggle {
+  padding-bottom: 0;
+}
+.custom-select,
+.custom-select .vs__selected-options,
+.custom-select > .vs__dropdown {
+  height: 26px;
+}
+.custom-select .vs__actions {
+  display: none;
+}
+.flex-0 {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
 .line {
   display: inline-block;
   width: 20px;

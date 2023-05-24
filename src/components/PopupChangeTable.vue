@@ -22,10 +22,6 @@
   </Popup>
 </template>
 
-<style>
-@import "vue-select/dist/vue-select.css";
-</style>
-
 <script>
 import Popup from "./Popup.vue";
 import vSelect from "vue-select";
