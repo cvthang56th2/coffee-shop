@@ -233,7 +233,7 @@
                     <div
                       class="absolute -bottom-1 left-0 w-[25px] h-[25px] font-bold"
                     >
-                      #{{ pIndex + 1 }}
+                      #{{ String(group.id).replace('product-', '') }}
                     </div>
                     <div
                       v-if="product.isChecked"
