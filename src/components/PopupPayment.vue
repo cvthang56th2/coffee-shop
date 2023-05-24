@@ -49,23 +49,73 @@
           </div>
         </div>
         <div class="flex mt-2">
-          <div class="w-1-2 mr-2">Phí dịch vụ: {{ $numberWithCommas(currentTable.bill.serviceFee) }}</div>
+          <div class="w-1-2 mr-2">Phí dịch vụ: {{ $numberWithCommas(formData.serviceFee) }}</div>
           <div class="w-1-2 ml-2">
-            VAT: {{ $numberWithCommas(currentTable.bill.vat) }}
+            VAT: {{ $numberWithCommas(formData.vat) }}
           </div>
         </div>
         <div class="flex mt-2">
-          <div class="w-1-2 mr-2">Giảm giá: {{currentTable.bill.decreaseBill ? '-' : ''}} {{ $numberWithCommas(currentTable.bill.decreaseBill) }}</div>
+          <div class="w-1-2 mr-2">Giảm giá: {{formData.decreaseBill ? '-' : ''}} {{ $numberWithCommas(formData.decreaseBill) }}</div>
         </div>
         <div class="flex mt-2">
-          <div class="w-1-2 font-bold">
-            Thành tiền: {{ $numberWithCommas(currentTable.bill.total) }} VNĐ
+          <div class="font-bold">
+            Thành tiền: {{ $numberWithCommas(totalBill) }} VNĐ
           </div>
         </div>
         <div class="flex justify-center mt-2">
           <div class="w-5-6 border-1px border-black"></div>
         </div>
         <div class="pt-1 text-center italic">Cảm ơn quý khách, hẹn gặp lại!</div>
+      </div>
+      <div class="flex flex-wrap mt-2 pt-2 flex-0 border-t-2">
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Phí D.Vụ
+          </div>
+          <div>
+            <InputMoney
+              v-model="formData.serviceFee"
+              @input="hasChange = true"
+              class="bg-white rounded-sm border-1px w-full outline-none"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Giảm bill
+          </div>
+          <div>
+            <InputMoney
+              v-model="formData.decreaseBill"
+              @input="hasChange = true"
+              class="bg-white rounded-sm border-1px w-full outline-none"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Thuế
+          </div>
+          <div>
+            <InputMoney
+              v-model="formData.vat"
+              @input="hasChange = true"
+              class="bg-white rounded-sm border-1px w-full outline-none"
+            />
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 flex px-2">
+          <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
+            Tổng tiền
+          </div>
+          <div>
+            <input
+              :value="$numberWithCommas(totalBill)"
+              class="bg-gray-300 rounded-sm border-1px w-full outline-none"
+              disabled
+            />
+          </div>
+        </div>
       </div>
     </div>
     <template v-slot:buttons>
@@ -103,6 +153,7 @@
 import Popup from "./Popup.vue";
 import OrderServices from '../firebase/order/order'
 import { ORDER_STATUS } from '../constants/constants'
+import InputMoney from "./InputMoney.vue";
 
 export default {
   props: {
@@ -121,15 +172,34 @@ export default {
   },
   components: {
     Popup,
+    InputMoney
   },
   watch: {
     modelValue(v) {
       this.isShow = v;
+      if (v) {
+        this.hasChange = false
+        const { serviceFee = 0, vat = 0, decreaseBill = 0 } = this.formData;
+        this.formData = { serviceFee, vat, decreaseBill }
+      }
     },
   },
-  computed: {},
+  computed: {
+    totalItems () {
+      return this.currentTable.bill.items.reduce((result, item) => {
+        result += this.getItemTotal(item);
+        return result;
+      }, 0);
+    },
+    totalBill() {
+      const { serviceFee = 0, vat = 0, decreaseBill = 0 } = this.formData;
+      return this.totalItems + serviceFee + vat - decreaseBill;
+    },
+  },
   data: () => ({
+    hasChange: false,
     isShow: false,
+    formData: {}
   }),
   methods: {
     hide() {
@@ -153,9 +223,16 @@ export default {
           toast.addEventListener('mouseleave', this.$swal.resumeTimer)
         }
       })
-      OrderServices.updateOrder(this.currentTable.bill.id, {
+      let updateData = {
         status: ORDER_STATUS.success
-      })
+      }
+      if (this.hasChange) {
+        updateData = {
+          ...updateData,
+          ...this.formData
+        }
+      }
+      OrderServices.updateOrder(this.currentTable.bill.id, updateData)
       Toast.fire({
         icon: 'success',
         title: 'Thanh toán thành công!'
