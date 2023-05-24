@@ -52,7 +52,7 @@ const statisticCurrent = computed(() => {
 });
 const isShowPopupOrder = ref(false);
 const isRetail = ref(false);
-const retailBill = ref({})
+const retailBill = ref(null)
 const isShowPopupChangeTable = ref(false);
 const isShowPopupPayment = ref(false);
 const selectedTable = ref(null);
@@ -67,6 +67,12 @@ const openRetail = () => {
   isRetail.value = true
   isShowPopupOrder.value = true;
 }
+
+const onCloseOrder = () => {
+  if (isRetail.value && !retailBill.value) {
+    isRetail.value = false
+  }
+};
 
 const onOrderSaved = (bill) => {
   if (isRetail.value) {
@@ -86,7 +92,9 @@ const onChangeTable = (toTableId) => {
 };
 
 const onSavePayment = () => {
-  if (!isRetail.value) {
+  if (isRetail.value) {
+    retailBill.value = null
+  } else {
     delete selectedTable.value.bill
   }
 };
@@ -134,7 +142,7 @@ onMounted(() => {
     if (selectedTable.value) {
       selectedTable.value = listTables.value.find(e => e.id === selectedTable.value.id)
     }
-  })
+  }, { status: ORDER_STATUS.pending })
 })
 </script>
 <template>
@@ -143,7 +151,7 @@ onMounted(() => {
       <div
         class="w-full xl:w-2/3 mb-2 xl:mb-0 lg:flex justify-center xl:justify-start items-center"
       >
-        <div class="mb-2 lg:mb-0 mr-10 text-3xl">
+        <div class="mb-2 lg:mb-0 mr-10 text-xl md:text-3xl">
           Bàn đang chọn:
           bàn
           <span class="font-bold">{{
@@ -154,28 +162,27 @@ onMounted(() => {
             (selectedTable && selectedTable.group) || "-"
           }}</span>
         </div>
-        <div class="flex">
+        <div class="flex overflow-x-auto">
           <button
             :disabled="!selectedTable"
             :class="!selectedTable ? 'opacity-30' : ''"
-            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-green-500 hover:bg-green-700 font-bold rounded-md mr-4"
+            class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-green-500 hover:bg-green-700 font-bold rounded-md mr-4"
             @click="openPopupOrder(selectedTable)"
           >
             Chọn món
           </button>
           <button
-            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-blue-500 hover:bg-blue-700 font-bold rounded-md mr-4"
+            class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-blue-500 hover:bg-blue-700 font-bold rounded-md mr-4"
             @click="openRetail()"
           >
-            Bán<br>
-            lẻ
+            Bán <br class="hidden md:block">lẻ
           </button>
           <button
             :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
             :class="
               !selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''
             "
-            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-purple-500 hover:bg-purple-700 font-bold rounded-md mr-4"
+            class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-purple-500 hover:bg-purple-700 font-bold rounded-md mr-4"
             @click="isShowPopupChangeTable = true"
           >
             Chuyển bàn
@@ -185,7 +192,7 @@ onMounted(() => {
             :class="
               !selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''
             "
-            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-pink-500 hover:bg-pink-700 font-bold rounded-md mr-4"
+            class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-pink-500 hover:bg-pink-700 font-bold rounded-md mr-4"
             @click="isShowPopupPayment = true"
           >
             Thanh toán
@@ -195,10 +202,10 @@ onMounted(() => {
             :class="
               !selectedTable || (selectedTable && !selectedTable.bill) ? 'opacity-30' : ''
             "
-            class="w-[70px] h-[70px] ease-linear transition-all duration-150 flex items-center justify-center text-white bg-red-500 hover:bg-red-700 font-bold rounded-md mr-4"
+            class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-red-500 hover:bg-red-700 font-bold rounded-md mr-4"
             @click="cancelOrder"
           >
-            Hủy<br>bàn
+            Hủy <br class="hidden md:block">bàn
           </button>
         </div>
       </div>
@@ -206,7 +213,7 @@ onMounted(() => {
         v-model="keyword"
         type="text"
         placeholder="Nhập mã hoặc tên bàn..."
-        class="w-full xl:w-1/3 border-1px border-blue-400 rounded-sm p-2"
+        class="w-full xl:w-1/3 border-1px border-blue-400 rounded-sm p-1 md:p-2"
       />
     </div>
     <div class="flex-1 overflow-y-auto p-2 bg-gray-200">
@@ -216,7 +223,7 @@ onMounted(() => {
         :key="`group-${gIndex}`"
       >
         <div
-          class="text-2xl font-bold mb-2 text-blue-500 bg-white px-2 py-1 text-center underline"
+          class="text-lg md:text-2xl font-bold mb-1 md:mb-2 text-blue-500 bg-white px-2 py-1 text-center underline"
           :class="groupColors[group.groupId]"
         >
           Khu vực {{ group.groupId }}
@@ -254,22 +261,22 @@ onMounted(() => {
                 />
                 <div
                   :class="table.bill ? 'bg-blue-400' : 'bg-gray-300'"
-                  class="min-h-[30px] text-white text-sm flex items-center justify-end px-1"
+                  class="min-h-[20px] md:min-h-[30px] text-white text-xs md:text-sm flex items-center justify-end px-1"
                 >
                   {{ table.bill ? $formatDate(table.bill.createdAt) : "" }}
                 </div>
                 <div class="px-2 py-1">
-                  <div class="text-xl font-semibold" :class="groupColors[group.groupId]">
+                  <div class="text-md md:text-xl font-semibold" :class="groupColors[group.groupId]">
                     {{ table.name }}
                   </div>
                   <div class="flex items-end justify-between">
-                    <div class="text-red-500 font-semibold">
+                    <div class="text-red-500 font-semibold text-sm md:text-md">
                       {{ table.bill ? $numberWithCommas(table.bill.total || 0) : "" }}
                     </div>
                     <img
                       :src="table.bill ? HaveCustomerImg : NoCustomerImg"
                       alt=""
-                      width="36"
+                      class="w-[25px] md:w-[36px]"
                     />
                   </div>
                 </div>
@@ -280,7 +287,7 @@ onMounted(() => {
       </div>
     </div>
     <div class="md:flex justify-between py-2 border-t-2 flex-0 px-4 border-yellow-500">
-      <div class="flex mr-2 mb-2 md:mb-0">
+      <div class="flex mr-2">
         <div class="flex items-center mr-4">
           <div class="h-[24px] w-[40px] bg-blue-400 mr-2"></div>
           Bàn có khách:<span class="font-bold">{{
@@ -292,14 +299,14 @@ onMounted(() => {
           Bàn trống: <span class="font-bold">{{ statisticCurrent.totalEmpty }}</span>
         </div>
       </div>
-      <div class="text-right italic">*Nhấp đôi chuột để chọn món</div>
+      <div class="hidden md:block text-right italic">*Nhấp đôi chuột để chọn món</div>
     </div>
     <PopupOrder
       v-model="isShowPopupOrder"
       :currentTable="isRetail ? {} : (selectedTable || {})"
       :isRetail="isRetail"
-      :nextOrder="orders.length + 1"
       @saved="onOrderSaved"
+      @closed="onCloseOrder"
       @openPayment="isShowPopupPayment = true"
     />
     <PopupChangeTable

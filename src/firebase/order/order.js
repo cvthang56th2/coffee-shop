@@ -3,6 +3,7 @@ import {
   doc,
   query,
   orderBy,
+  where,
   collection,
   onSnapshot,
   Timestamp,
@@ -19,7 +20,7 @@ class orderServices {
   async createOrder(data) {
     return new Promise(function(resolve, reject) {
       try {
-        const id = data.id || uid(20)
+        const id = data.id || uid(8)
         const today = new Date()
         const ref = doc(db, ORDER, id)
         data.id = id
@@ -63,8 +64,13 @@ class orderServices {
     })
   }
 
-  getOrders(callback) {
-    const q = query(collection(db, ORDER), orderBy("createdAt"))
+  getOrders(callback, { status }) {
+    let q
+    if (status) {
+      q = query(collection(db, ORDER), orderBy("createdAt"), where("status", "==", status))
+    } else {
+      q = query(collection(db, ORDER), orderBy("createdAt"))
+    }
     if (typeof this.unsubscribeOrders === 'function') {
       this.unsubscribeOrders()
     }

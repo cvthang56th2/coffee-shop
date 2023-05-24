@@ -21,17 +21,25 @@
     </div>  
     </template>
     <template v-slot:title>
-      <div class="md:flex items-center justify-between">
+      <div class="lg:flex items-center justify-between">
         <h4 class="text-2xl font-semibold">
           {{ isRetail ? 'Bán lẻ' : `Order cho bàn ${ currentTable.name } khu ${ currentTable.group }` }}
         </h4>
-        <div class="ml-4 font-semibold text-blue-500 flex-[0_0_200px]">
+        <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_200px]">
           Giờ: {{ billTime }}
         </div>
       </div>
     </template>
-    <div class="flex flex-wrap h-[calc(100vh_-_170px)] overflow-y-auto">
-      <div class="flex flex-col h-full overflow-y-auto w-full xl:w-4/12 bg-blue-400 p-2">
+    <div class="lg:hidden flex w-full">
+      <button @click="currentTab = 'list'" class="w-1/2 py-1 uppercase text-center font-bold bg-yellow-500 text-white border-r-[1px] text-sm border-white">
+        Danh sách món
+      </button>
+      <button @click="currentTab = 'menu'" class="w-1/2 py-1 uppercase text-center font-bold bg-blue-500 text-white border-l-[1px] text-sm border-white">
+        Thực đơn
+      </button>
+    </div>
+    <div class="flex flex-wrap h-[calc(100vh_-_200px)] lg:h-[calc(100vh_-_170px)] overflow-y-auto">
+      <div class="flex flex-col h-full overflow-y-auto w-full lg:w-4/12 bg-blue-400 p-2 lg:block" :class="currentTab === 'list' ? '' : 'hidden'">
         <div class="mb-2 flex-0 text-white flex items-center justify-between">
           <div class="font-bold text-xl">
             Danh sách món
@@ -43,12 +51,12 @@
         </div>
         <div class="flex flex-col overflow-y-auto flex-1 rounded-md">
           <div class="flex border-b-[1px] bg-yellow-500 font-semibold flex-0 text-white">
-            <div class="w-3/12 p-1 border-r-[1px] text-center">Tên</div>
-            <div class="w-2/12 p-1 border-r-[1px] text-center">S.L</div>
-            <div class="w-2/12 p-1 border-r-[1px] text-center">Giá</div>
-            <div class="w-2/12 p-1 border-r-[1px] text-center">Giảm</div>
-            <div class="w-2/12 p-1 border-r-[1px] text-center">T.Tiền</div>
-            <div class="w-1/12 p-1 text-center"></div>
+            <div class="w-3/12 p-[2px] lg:p-1 border-r-[1px] text-center">Tên</div>
+            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">S.L</div>
+            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">Giá</div>
+            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">Giảm</div>
+            <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-center">T.Tiền</div>
+            <div class="w-1/12 p-[2px] lg:p-1 text-center"></div>
           </div>
           <div v-if="formData.items.length" class="flex-1 overflow-y-auto">
             <div
@@ -57,8 +65,8 @@
               :key="`order-item-${index}`"
             >
               <div class="flex items-center border-b-[1px]">
-                <div class="w-3/12 p-1 border-r-[1px]">{{ item.name }}</div>
-                <div class="w-2/12 p-1 border-r-[1px]">
+                <div class="w-3/12 p-[2px] lg:p-1 border-r-[1px]">{{ item.name }}</div>
+                <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px]">
                   <input
                     :id="`input-quantity-${index}`"
                     v-model="item.quantity"
@@ -69,12 +77,12 @@
                   />
                 </div>
                 <div
-                  class="w-2/12 p-1 border-r-[1px] text-right truncate"
+                  class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-right truncate"
                   :title="$numberWithCommas(item.price)"
                 >
                   {{ $numberWithCommas(item.price) }}
                 </div>
-                <div class="w-2/12 p-1 border-r-[1px]">
+                <div class="w-2/12 p-[2px] lg:p-1 border-r-[1px]">
                   <InputMoney
                     v-model="item.decrease"
                     @input="hasChange = true"
@@ -82,12 +90,12 @@
                   />
                 </div>
                 <div
-                  class="w-2/12 p-1 border-r-[1px] text-right truncate"
+                  class="w-2/12 p-[2px] lg:p-1 border-r-[1px] text-right truncate"
                   :title="$numberWithCommas(getItemTotal(item))"
                 >
                   {{ $numberWithCommas(getItemTotal(item)) }}
                 </div>
-                <div class="w-1/12 p-1 text-center">
+                <div class="w-1/12 p-[2px] lg:p-1 text-center">
                   <button
                     class="text-red-500 font-semibold hover:text-black"
                     @click="removeItem(index)"
@@ -153,7 +161,7 @@
           </div>
         </div>
       </div>
-      <div class="w-full xl:w-8/12 p-2 h-full overflow-auto flex flex-col">
+      <div class="w-full lg:w-8/12 p-2 h-full overflow-auto flex flex-col lg:block" :class="currentTab === 'menu' ? '' : 'hidden'">
         <div class="p-2 rounded mb-2 border-b-2 bg-white">
           <input
             v-model="keyword"
@@ -222,10 +230,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    nextOrder: {
-      type: Number,
-      required: true
-    }
   },
   components: {
     Popup,
@@ -285,6 +289,7 @@ export default {
     },
   },
   data: () => ({
+    currentTab: 'list',
     timeInterval: null,
     hasChange: false,
     billTime: null,
@@ -302,6 +307,7 @@ export default {
   methods: {
     hide () {
       this.$emit("update:modelValue", false);
+      this.$emit("closed");
     },
     onHidePopup() {
       if (this.hasChange) {
@@ -349,7 +355,7 @@ export default {
         ...JSON.parse(JSON.stringify(this.formData)),
         total: this.totalBill,
         tableId: this.isRetail ? 'retail' : this.currentTable.id,
-        id: this.formData.id || uid(20),
+        id: this.formData.id || uid(8),
         status: ORDER_STATUS.pending
       }
       if (this.formData.id) {
@@ -357,7 +363,6 @@ export default {
           OrderServices.updateOrder(this.formData.id, billData)
         }
       } else {
-        billData.orderId = this.nextOrder
         OrderServices.createOrder(billData)
       }
       this.$emit("saved", billData);

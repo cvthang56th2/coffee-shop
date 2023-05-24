@@ -8,7 +8,7 @@
         <div class="text-center font-bold text-xl mt-2">PHIẾU THANH TOÁN</div>
         <div class="flex">
           <div class="w-1-2 mr-2">N.viên: admin</div>
-          <div class="w-1-2 ml-2">HĐ: 12345</div>
+          <div class="w-1-2 ml-2 uppercase">HĐ: {{ currentTable.bill.id }}</div>
         </div>
         <div class="flex">
           <div class="w-1-2 mr-2">Giờ vào: {{ $formatDate(currentTable.bill.createdAt) }}</div>

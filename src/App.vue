@@ -76,12 +76,12 @@ onMounted(() => {
 <template>
   <div v-if="isMounted" class="h-screen flex flex-col">
     <template v-if="isLogin">
-      <header class="border-b-2 mb-2 flex-0 relative">
-        <div class="flex justify-center text-3xl py-2 font-bold text-amber-600">
-          <img :src="Favicon" alt="icon" width="40" class="mr-2">
+      <header class="border-b-2 mb-2 flex-0 relative px-4">
+        <div class="flex lg:justify-center text-2xl lg:text-3xl py-2 font-bold text-amber-600">
+          <img :src="Favicon" alt="icon" class="w-[30px] lg:w-[40px] mr-2">
           Coffee Shop
         </div>
-        <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-4 py-2" @click="logout">
+        <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 md:px-4 md:py-2" @click="logout">
           Khóa máy
         </button>
         <!-- <div>
