@@ -142,8 +142,9 @@
           <div class="flex mt-2">
             <div class="w-1-2 mr-2">Giảm giá:
               <template v-if="formData.decreaseBill">
-                - {{ $numberWithCommas(decreaseBillValue) }} ({{ formData.decreaseBill }} {{ formData.decreaseBillUnit }})
+                - {{ $numberWithCommas(decreaseBillValue) }} <template v-if="formData.decreaseBillUnit !== 'VND'">({{ formData.decreaseBill }} {{ formData.decreaseBillUnit }})</template>
               </template>
+              <span v-else>0</span>
             </div>
           </div>
           <div class="flex mt-2">

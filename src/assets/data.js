@@ -341,4 +341,5 @@ export const products = [
 ].map((e, i) => ({
   ...e,
   id: `product-${i + 1}`,
+  pid: i + 1
 }))
