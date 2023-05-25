@@ -1,6 +1,6 @@
 <template>
   <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" >
-    <div class="p-4">
+    <template v-slot:top-body>
       <div class="flex flex-wrap mb-4 pb-2 flex-0 border-b-2">
         <div class="w-full lg:w-1/2 flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
@@ -85,6 +85,8 @@
           </div>
         </div>
       </div>
+    </template>
+    <div class="max-h-[calc(100svh_-_350px)] lg:max-h-[calc(100svh_-_300px)] p-4">
       <div id="bill-html">
         <div class="text-center font-bold text-2xl mb-2">Ngâu Coffee</div>
         <div class="text-center italic">Address</div>
