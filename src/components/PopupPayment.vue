@@ -1,8 +1,8 @@
 <template>
   <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" >
     <template v-slot:top-body>
-      <div class="flex flex-wrap mb-4 pb-2 flex-0 border-b-2">
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+      <div class="flex flex-wrap mb-4 py-2 flex-0 border-b-2">
+        <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Phí D.Vụ
           </div>
@@ -14,7 +14,7 @@
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+        <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Giảm bill
           </div>
@@ -35,7 +35,7 @@
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+        <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Thuế
           </div>
@@ -47,7 +47,7 @@
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+        <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Tổng tiền
           </div>
@@ -59,7 +59,7 @@
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2 mb-2">
+        <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Khách đưa
           </div>
@@ -73,7 +73,7 @@
             <CheckedIcon class="w-7 h-7 ml-2 cursor-pointer" @click="formData.clientMoney = totalBill" />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2">
+        <div class="w-full lg:w-1/2 items-center flex px-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Trả lại
           </div>
