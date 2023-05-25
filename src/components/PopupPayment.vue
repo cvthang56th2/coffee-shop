@@ -321,6 +321,7 @@ export default {
         icon: 'success',
         title: 'Thanh toán thành công!'
       })
+      this.appStore.getStatisticToday()
       // call api
       this.$emit('saved')
       this.hide()

@@ -37,7 +37,8 @@
               : `Order cho bàn ${currentTable.name} khu ${currentTable.group}`
           }}
         </h4>
-        <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_200px]">
+        <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_300px] flex items-center">
+          <ClockIcon class="mr-1" />
           Thời gian: {{ billTime }}
         </div>
       </div>
@@ -277,6 +278,7 @@
 </template>
 
 <script>
+import ClockIcon from '../../components/icons/Clock.vue'
 import CheckedIcon from "../../assets/images/success-green-check-mark-icon.png";
 import InputMoney from "../InputMoney.vue";
 import Popup from "../Popup.vue";
@@ -306,6 +308,7 @@ export default {
   components: {
     Popup,
     InputMoney,
+    ClockIcon,
     vSelect
   },
   setup () {
