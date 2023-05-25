@@ -202,6 +202,7 @@ import OrderServices from '../firebase/order/order'
 import { ORDER_STATUS } from '../constants/constants'
 import InputMoney from "./InputMoney.vue";
 import vSelect from "vue-select";
+import { useAppStore } from '../stores/app'
 
 export default {
   props: {
@@ -223,12 +224,22 @@ export default {
     InputMoney,
     vSelect
   },
+  setup () {
+    const appStore = useAppStore()
+    return { appStore }
+  },
   watch: {
     modelValue(v) {
       this.isShow = v;
       if (v) {
         this.hasChange = false
-        const { serviceFee = 0, vat = 0, decreaseBill = 0, decreaseBillUnit = 'VND', clientMoney = 0 } = this.currentTable.bill || {};
+        let { serviceFee = 0, vat = 0, decreaseBill, decreaseBillUnit, clientMoney = 0 } = this.currentTable.bill || {};
+        if (!decreaseBill) {
+          decreaseBill = this.appStore.settings?.decreaseBill || 0
+        }
+        if (!decreaseBillUnit) {
+          decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
+        }
         this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
         this.$nextTick(() => {
           const clientInputEl = document.querySelector('#clientMoney')

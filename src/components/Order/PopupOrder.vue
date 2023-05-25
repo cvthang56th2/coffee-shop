@@ -283,6 +283,7 @@ import OrderServices from "../../firebase/order/order";
 import { uid } from "uid";
 import { ORDER_STATUS } from "../../constants/constants";
 import vSelect from "vue-select";
+import { useAppStore } from '../../stores/app.js'
 
 export default {
   props: {
@@ -304,21 +305,31 @@ export default {
     InputMoney,
     vSelect
   },
+  setup () {
+    const appStore = useAppStore()
+    return { appStore }
+  },
   watch: {
     modelValue(v) {
       this.isShow = v;
       clearInterval(this.timeInterval);
       if (v) {
         this.hasChange = false;
-        const {
+        let {
           id,
           items = [],
-          decreaseBill = 0,
-          decreaseBillUnit = 'VND',
+          decreaseBill,
+          decreaseBillUnit,
           serviceFee = 0,
           vat = 0,
           createdAt,
         } = JSON.parse(JSON.stringify(this.isRetail ? {} : this.currentTable.bill || {}));
+        if (!decreaseBill) {
+          decreaseBill = this.appStore.settings?.decreaseBill || 0
+        }
+        if (!decreaseBillUnit) {
+          decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
+        }
         this.formData = { id, items, decreaseBill, decreaseBillUnit, serviceFee, vat };
         if (createdAt) {
           this.billTime = this.$formatDate(createdAt, "DD/MM/YYYY hh:mm:ss");
@@ -386,10 +397,6 @@ export default {
     keyword: null,
     formData: {
       items: [],
-      decreaseBill: 0,
-      decreaseBillUnit: 'VND',
-      serviceFee: 0,
-      vat: 0,
     },
     products,
     isShow: false,
