@@ -1,5 +1,6 @@
 import {
   setDoc,
+  getDocs,
   doc,
   query,
   orderBy,
@@ -13,6 +14,7 @@ import {
 import { db } from '../config'
 import { uid } from 'uid'
 import { snapshotToArray } from '../../utils/utils'
+import { ORDER_STATUS } from '../../constants/constants'
 
 const ORDER = 'orders'
 
@@ -64,7 +66,28 @@ class orderServices {
     })
   }
 
-  getOrders(callback, { status }) {
+  async getStatisticToday() {
+    try {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+      const startTimestamp = Timestamp.fromDate(startOfDay);
+      const endTimestamp = Timestamp.fromDate(endOfDay);
+
+      const q = query(collection(db, ORDER), where("status", "==", ORDER_STATUS.success), where("updatedAt", ">=", startTimestamp), where("updatedAt", "<=", endTimestamp))
+      const querySnapshot = await getDocs(q);
+      return snapshotToArray(querySnapshot).reduce((resultObj, orderObj) => {
+        resultObj.total += orderObj.total
+        return resultObj
+      }, {
+        total: 0
+      })
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  getOrdersSnapshot(callback, { status }) {
     let q
     if (status) {
       q = query(collection(db, ORDER), orderBy("createdAt"), where("status", "==", status))

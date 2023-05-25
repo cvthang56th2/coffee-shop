@@ -1,6 +1,6 @@
 <template>
   <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" >
-    <div class="p-4">
+    <template v-slot:top-body>
       <div class="flex flex-wrap mb-4 pb-2 flex-0 border-b-2">
         <div class="w-full lg:w-1/2 flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
@@ -10,7 +10,7 @@
             <InputMoney
               v-model="formData.serviceFee"
               @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
           </div>
         </div>
@@ -23,7 +23,7 @@
               v-model="formData.decreaseBill"
               @input="hasChange = true"
               :max="formData.decreaseBillUnit === '%' ? 100 : summaryBill"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
             <v-select
               v-model="formData.decreaseBillUnit"
@@ -31,7 +31,7 @@
               :options="['VND', '%']"
               :clearable="false"
               appendToBody
-              class="custom-select bg-white rounded-sm w-full outline-none ml-1"
+              class="custom-select bg-white rounded-sm w-full ml-1"
             />
           </div>
         </div>
@@ -43,7 +43,7 @@
             <InputMoney
               v-model="formData.vat"
               @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
           </div>
         </div>
@@ -54,22 +54,23 @@
           <div>
             <input
               :value="$numberWithCommas(totalBill)"
-              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+              class="bg-gray-300 rounded-sm border-1px w-full px-1"
               disabled
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2">
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Khách đưa
           </div>
-          <div>
+          <div class="flex items-center">
             <InputMoney
               id="clientMoney"
               v-model="formData.clientMoney"
               @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
+            <CheckedIcon class="w-7 h-7 ml-2 cursor-pointer" @click="formData.clientMoney = totalBill" />
           </div>
         </div>
         <div class="w-full lg:w-1/2 flex px-2">
@@ -79,12 +80,14 @@
           <div>
             <input
               :value="$numberWithCommas(refundMoney)"
-              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+              class="bg-gray-300 rounded-sm border-1px w-full px-1"
               disabled
             />
           </div>
         </div>
       </div>
+    </template>
+    <div class="max-h-[calc(100svh_-_350px)] lg:max-h-[calc(100svh_-_300px)] p-4">
       <div id="bill-html">
         <div class="text-center font-bold text-2xl mb-2">Ngâu Coffee</div>
         <div class="text-center italic">20 Đồng Khởi, Diên Khánh</div>
@@ -142,8 +145,9 @@
           <div class="flex mt-2">
             <div>Giảm giá:
               <template v-if="formData.decreaseBill">
-                - {{ $numberWithCommas(decreaseBillValue) }} ({{ formData.decreaseBill }} {{ formData.decreaseBillUnit }})
+                - {{ $numberWithCommas(decreaseBillValue) }} <template v-if="formData.decreaseBillUnit !== 'VND'">({{ formData.decreaseBill }} {{ formData.decreaseBillUnit }})</template>
               </template>
+              <span v-else>0</span>
             </div>
           </div>
           <div class="flex mt-2">
@@ -201,6 +205,8 @@ import OrderServices from '../firebase/order/order'
 import { ORDER_STATUS } from '../constants/constants'
 import InputMoney from "./InputMoney.vue";
 import vSelect from "vue-select";
+import { useAppStore } from '../stores/app'
+import CheckedIcon from "./icons/Checked.vue";
 
 export default {
   props: {
@@ -220,14 +226,25 @@ export default {
   components: {
     Popup,
     InputMoney,
+    CheckedIcon,
     vSelect
+  },
+  setup () {
+    const appStore = useAppStore()
+    return { appStore }
   },
   watch: {
     modelValue(v) {
       this.isShow = v;
       if (v) {
         this.hasChange = false
-        const { serviceFee = 0, vat = 0, decreaseBill = 0, decreaseBillUnit = 'VND', clientMoney = 0 } = this.formData;
+        let { serviceFee = 0, vat = 0, decreaseBill, decreaseBillUnit, clientMoney = 0 } = this.currentTable.bill || {};
+        if (decreaseBill === undefined) {
+          decreaseBill = this.appStore.settings?.decreaseBill || 0
+        }
+        if (decreaseBillUnit === undefined) {
+          decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
+        }
         this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
         this.$nextTick(() => {
           const clientInputEl = document.querySelector('#clientMoney')
@@ -292,6 +309,7 @@ export default {
         didOpen: (toast) => {
           toast.addEventListener('mouseenter', this.$swal.stopTimer)
           toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+          toast.addEventListener('click', ()=> this.$swal.close())
         }
       })
       let updateData = {
@@ -308,6 +326,7 @@ export default {
         icon: 'success',
         title: 'Thanh toán thành công!'
       })
+      this.appStore.getStatisticToday()
       // call api
       this.$emit('saved')
       this.hide()
@@ -331,6 +350,7 @@ export default {
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', this.$swal.stopTimer)
               toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+              toast.addEventListener('click', ()=> this.$swal.close())
             }
           })
             OrderServices.updateOrder(this.currentTable.bill.id, {

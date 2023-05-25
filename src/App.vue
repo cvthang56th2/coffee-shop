@@ -3,8 +3,13 @@ import Favicon from './assets/images/favicon.png'
 import { ref, inject, onMounted } from 'vue'
 import AuthServices from './firebase/auth/auth'
 import UserServices from './firebase/user/user'
+import OptionServices from './firebase/option/option'
+import PopupSettings from './components/PopupSettings.vue'
+import { useAppStore } from './stores/app'
 
 const swal = inject('$swal')
+const appStore = useAppStore()
+const isShowPopupSettings = ref(false)
 const isLogin = ref(false)
 const formData = ref({
   email: 'admin@coffee.com'
@@ -19,6 +24,7 @@ const login = async () => {
     didOpen: (toast) => {
       toast.addEventListener('mouseenter', swal.stopTimer)
       toast.addEventListener('mouseleave', swal.resumeTimer)
+      toast.addEventListener('click', ()=> swal.close())
     }
   })
   
@@ -58,6 +64,10 @@ const logout = () => {
     }
   })
 }
+const getSettings = async () => {
+  const settings = await OptionServices.getOptionById('settings')
+  appStore.setSettings(settings)
+}
 const isMounted = ref(false)
 onMounted(() => {
   AuthServices.onAuthStateChanged(async (res) => {
@@ -66,6 +76,7 @@ onMounted(() => {
       const userInfo = await UserServices.getUserById(uid)
       if (userInfo) {
         isLogin.value = true
+        getSettings()
       }
     }
     isMounted.value = true
@@ -74,14 +85,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="isMounted" class="h-screen flex flex-col">
+  <div v-if="isMounted" class="h-[100svh] flex flex-col">
     <template v-if="isLogin">
       <header class="border-b-2 mb-2 flex-0 relative px-4">
-        <div class="flex lg:justify-center text-2xl lg:text-3xl py-2 font-bold text-amber-600">
+        <div class="flex lg:justify-center text-xl md:text-2xl lg:text-3xl py-2 font-bold text-amber-600">
           <img :src="Favicon" alt="icon" class="w-[30px] lg:w-[40px] mr-2">
           Ngâu Coffee
         </div>
-        <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 md:px-4 md:py-2" @click="logout">
+        <button class="absolute top-2 right-[115px] lg:right-[130px] bg-cyan-400 hover:bg-cyan-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 lg:px-4 lg:py-2" @click="isShowPopupSettings = true">
+          Cài đặt
+        </button>
+        <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 lg:px-4 lg:py-2" @click="logout">
           Khóa máy
         </button>
         <!-- <div>
@@ -103,6 +117,7 @@ onMounted(() => {
       <main class="p-1 flex-1 overflow-y-auto">
         <router-view></router-view>
       </main>
+      <PopupSettings v-model="isShowPopupSettings" />
     </template>
     
     <div v-else class="px-6 h-full text-gray-800">
@@ -157,7 +172,7 @@ onMounted(() => {
     </div>
   </div>
   
-  <div v-else class="h-screen w-screen flex items-center justify-center">
+  <div v-else class="h-[100svh] w-[100svw] flex items-center justify-center">
     <div class="load-3 flex">
       <div class="flex justify-center">
         <div class="line"></div>
@@ -179,6 +194,9 @@ onMounted(() => {
 }
 .custom-select .vs__dropdown-toggle {
   padding-bottom: 0;
+}
+.custom-select .vs__search {
+  margin-top: 0;
 }
 .custom-select,
 .custom-select .vs__selected-options,

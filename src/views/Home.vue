@@ -9,6 +9,7 @@ import { ref, computed, onMounted, inject } from "vue";
 import { listTables as list } from "../assets/data";
 import OrderServices from '../firebase/order/order'
 import { ORDER_STATUS } from '../constants/constants'
+import { useAppStore } from "../stores/app";
 
 const swal = inject('$swal')
 const orders = ref([])
@@ -56,6 +57,7 @@ const retailBill = ref(null)
 const isShowPopupChangeTable = ref(false);
 const isShowPopupPayment = ref(false);
 const selectedTable = ref(null);
+const appStore = useAppStore()
 
 const openPopupOrder = (table) => {
   isRetail.value = false
@@ -118,6 +120,7 @@ const cancelOrder = () => {
         didOpen: (toast) => {
           toast.addEventListener('mouseenter', swal.stopTimer)
           toast.addEventListener('mouseleave', swal.resumeTimer)
+          toast.addEventListener('click', ()=> swal.close())
         }
       })
         OrderServices.updateOrder(selectedTable.value.bill.id, {
@@ -133,7 +136,7 @@ const cancelOrder = () => {
 }
 
 onMounted(() => {
-  OrderServices.getOrders(data => {
+  OrderServices.getOrdersSnapshot(data => {
     orders.value = data || []
     listTables.value = listTables.value.map(e => ({
       ...e,
@@ -143,6 +146,8 @@ onMounted(() => {
       selectedTable.value = listTables.value.find(e => e.id === selectedTable.value.id)
     }
   }, { status: ORDER_STATUS.pending })
+
+  appStore.getStatisticToday()
 
   for (const el of document.querySelectorAll('.scroll-to-button')) {
     if (el.getAttribute('target-el')) {
@@ -311,8 +316,8 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="md:flex justify-between py-2 border-t-2 flex-0 px-4 border-yellow-500">
-      <div class="flex mr-2">
+    <div class="lg:flex justify-around py-2 border-t-2 flex-0 px-4 border-yellow-500">
+      <div class="flex justify-center lg:justify-start">
         <div class="flex items-center mr-4">
           <div class="h-[24px] w-[40px] bg-blue-400 mr-2"></div>
           Bàn có khách:<span class="font-bold">{{
@@ -324,7 +329,10 @@ onMounted(() => {
           Bàn trống: <span class="font-bold">{{ statisticCurrent.totalEmpty }}</span>
         </div>
       </div>
-      <div class="hidden md:block text-right italic">*Nhấp đôi chuột để chọn món</div>
+      <div class="mt-2 lg:mt-0 mx-2 italic flex items-center justify-center">
+        Doanh thu hôm nay: {{ $numberWithCommas(appStore.statisticToday.total) }} VNĐ
+      </div>
+      <div class="hidden lg:block text-right italic">*Nhấp đôi chuột để chọn món</div>
     </div>
     <PopupOrder
       v-model="isShowPopupOrder"

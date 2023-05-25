@@ -37,14 +37,13 @@
               : `Order cho bàn ${currentTable.name} khu ${currentTable.group}`
           }}
         </h4>
-        <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_200px]">
-          Giờ: {{ billTime }}
+        <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_300px] flex items-center">
+          <ClockIcon class="mr-1" />
+          Thời gian: {{ billTime }}
         </div>
       </div>
     </template>
-    <div
-      class="h-[calc(100vh_-_270px)] lg:h-[calc(100vh_-_150px)] overflow-y-auto flex flex-col"
-    >
+    <template v-slot:top-body>
       <div class="lg:hidden flex w-full flex-0">
         <button
           @click="currentTab = 'list'"
@@ -61,6 +60,10 @@
           Thực đơn
         </button>
       </div>
+    </template>
+    <div
+      class="h-[calc(100svh_-_200px)] lg:h-[calc(100svh_-_150px)] overflow-y-auto flex flex-col"
+    >
       <div class="flex flex-wrap overflow-y-auto flex-1">
         <div
           class="flex-col h-full overflow-y-auto w-full lg:w-4/12 bg-blue-400 p-2 lg:flex"
@@ -99,7 +102,7 @@
                       @input="hasChange = true"
                       type="number"
                       min="0"
-                      class="outline-none max-w-full border-1px rounded-sm"
+                      class="max-w-full border-1px rounded-sm"
                     />
                   </div>
                   <div
@@ -112,7 +115,7 @@
                     <InputMoney
                       v-model="item.decrease"
                       @input="hasChange = true"
-                      class="outline-none max-w-full border-1px rounded-sm"
+                      class="max-w-full border-1px rounded-sm"
                     />
                   </div>
                   <div
@@ -145,7 +148,7 @@
                 <InputMoney
                   v-model="formData.serviceFee"
                   @input="hasChange = true"
-                  class="bg-white rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-white rounded-sm border-1px w-full px-1"
                 />
               </div>
             </div>
@@ -158,7 +161,7 @@
                   v-model="formData.decreaseBill"
                   @input="hasChange = true"
                   :max="formData.decreaseBillUnit === '%' ? 100 : summaryBill"
-                  class="bg-white rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-white rounded-sm border-1px w-full px-1"
                 />
                 <v-select
                   v-model="formData.decreaseBillUnit"
@@ -166,7 +169,7 @@
                   :options="['VND', '%']"
                   :clearable="false"
                   appendToBody
-                  class="custom-select bg-white rounded-sm w-full outline-none ml-1"
+                  class="custom-select bg-white rounded-sm w-full ml-1"
                 />
               </div>
             </div>
@@ -178,7 +181,7 @@
                 <InputMoney
                   v-model="formData.vat"
                   @input="hasChange = true"
-                  class="bg-white rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-white rounded-sm border-1px w-full px-1"
                 />
               </div>
             </div>
@@ -189,7 +192,7 @@
               <div>
                 <input
                   :value="$numberWithCommas(totalBill)"
-                  class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-gray-300 rounded-sm border-1px w-full px-1"
                   disabled
                 />
               </div>
@@ -200,17 +203,17 @@
           class="w-full lg:w-8/12 p-2 h-full overflow-y-auto flex flex-col"
           :class="currentTab === 'menu' ? '' : 'hidden'"
         >
-          <div class="p-2 rounded mb-2 border-b-2 bg-white flex-0">
+          <div class="p-2 rounded border-b-2 bg-white flex-0">
             <input
               id="search-product-keyword"
               v-model="keyword"
               @input="hasChange = true"
               type="text"
               placeholder="Nhập mã hoặc tên..."
-              class="outline-none rounded-md border-1px px-2 py-1 w-full"
+              class="rounded-md border-1px px-2 py-1 w-full"
             />
           </div>
-          <div class="flex-1 overflow-x-hidden overflow-y-auto">
+          <div class="flex-1 overflow-x-hidden overflow-y-auto p-2 bg-slate-200">
             <div class="flex flex-wrap -mx-[4px]">
               <div
                 v-for="(product, pIndex) in computedProducts"
@@ -222,7 +225,7 @@
                   :class="product.isChecked ? 'border-green-500' : 'border-white'"
                 >
                   <div
-                    class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative select-none h-full items-center"
+                    class="border-1px border-b-[2px] flex p-1 rounded-md hover:bg-gray-200 cursor-pointer bg-white relative select-none h-full items-centers shadow-lg"
                     :class="
                       product.isChecked
                         ? 'border-green-500'
@@ -233,7 +236,7 @@
                     <div
                       class="absolute -bottom-1 left-0 w-[25px] h-[25px] font-bold"
                     >
-                      #{{ pIndex + 1 }}
+                      #{{ String(product.pid) }}
                     </div>
                     <div
                       v-if="product.isChecked"
@@ -275,6 +278,7 @@
 </template>
 
 <script>
+import ClockIcon from '../../components/icons/Clock.vue'
 import CheckedIcon from "../../assets/images/success-green-check-mark-icon.png";
 import InputMoney from "../InputMoney.vue";
 import Popup from "../Popup.vue";
@@ -283,6 +287,8 @@ import OrderServices from "../../firebase/order/order";
 import { uid } from "uid";
 import { ORDER_STATUS } from "../../constants/constants";
 import vSelect from "vue-select";
+import { useAppStore } from '../../stores/app.js'
+import { toLowerCaseNonAccentVietnamese } from '../../utils/utils'
 
 export default {
   props: {
@@ -302,7 +308,12 @@ export default {
   components: {
     Popup,
     InputMoney,
+    ClockIcon,
     vSelect
+  },
+  setup () {
+    const appStore = useAppStore()
+    return { appStore }
   },
   watch: {
     modelValue(v) {
@@ -310,15 +321,21 @@ export default {
       clearInterval(this.timeInterval);
       if (v) {
         this.hasChange = false;
-        const {
+        let {
           id,
           items = [],
-          decreaseBill = 0,
-          decreaseBillUnit = 'VND',
+          decreaseBill,
+          decreaseBillUnit,
           serviceFee = 0,
           vat = 0,
           createdAt,
         } = JSON.parse(JSON.stringify(this.isRetail ? {} : this.currentTable.bill || {}));
+        if (decreaseBill === undefined) {
+          decreaseBill = this.appStore.settings?.decreaseBill || 0
+        }
+        if (decreaseBillUnit === undefined) {
+          decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
+        }
         this.formData = { id, items, decreaseBill, decreaseBillUnit, serviceFee, vat };
         if (createdAt) {
           this.billTime = this.$formatDate(createdAt, "DD/MM/YYYY hh:mm:ss");
@@ -368,10 +385,10 @@ export default {
         };
       });
       if (this.keyword) {
-        const regex = new RegExp(this.keyword, "gi");
+        const regex = new RegExp(toLowerCaseNonAccentVietnamese(this.keyword), "gi");
         result = result.filter(
           (e) =>
-            (e.id && String(e.id).match(regex)) || (e.name && String(e.name).match(regex))
+            (e.pid && String(e.pid).match(regex)) || (e.name && String(toLowerCaseNonAccentVietnamese(e.name)).match(regex))
         );
       }
       return result;
@@ -386,10 +403,6 @@ export default {
     keyword: null,
     formData: {
       items: [],
-      decreaseBill: 0,
-      decreaseBillUnit: 'VND',
-      serviceFee: 0,
-      vat: 0,
     },
     products,
     isShow: false,
@@ -407,7 +420,7 @@ export default {
       if (this.hasChange) {
         this.$swal
           .fire({
-            title: "Đã có vài thay đổi tên form này, bạn có chắc muốn tắt không?",
+            title: "Đã có vài thay đổi trên form này, bạn có chắc muốn tắt không?",
             showCancelButton: true,
             cancelButtonText: "Không",
             confirmButtonText: "Có",
@@ -437,6 +450,7 @@ export default {
         didOpen: (toast) => {
           toast.addEventListener("mouseenter", this.$swal.stopTimer);
           toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+          toast.addEventListener('click', ()=> this.$swal.close())
         },
       });
       if (!this.formData.items.length) {
