@@ -38,13 +38,11 @@
           }}
         </h4>
         <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_200px]">
-          Giờ: {{ billTime }}
+          Thời gian: {{ billTime }}
         </div>
       </div>
     </template>
-    <div
-      class="h-[calc(100vh_-_270px)] lg:h-[calc(100vh_-_150px)] overflow-y-auto flex flex-col"
-    >
+    <template v-slot:top-body>
       <div class="lg:hidden flex w-full flex-0">
         <button
           @click="currentTab = 'list'"
@@ -61,6 +59,10 @@
           Thực đơn
         </button>
       </div>
+    </template>
+    <div
+      class="h-[calc(100vh_-_330px)] lg:h-[calc(100vh_-_150px)] overflow-y-auto flex flex-col"
+    >
       <div class="flex flex-wrap overflow-y-auto flex-1">
         <div
           class="flex-col h-full overflow-y-auto w-full lg:w-4/12 bg-blue-400 p-2 lg:flex"
@@ -325,10 +327,10 @@ export default {
           vat = 0,
           createdAt,
         } = JSON.parse(JSON.stringify(this.isRetail ? {} : this.currentTable.bill || {}));
-        if (!decreaseBill) {
+        if (decreaseBill === undefined) {
           decreaseBill = this.appStore.settings?.decreaseBill || 0
         }
-        if (!decreaseBillUnit) {
+        if (decreaseBillUnit === undefined) {
           decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
         }
         this.formData = { id, items, decreaseBill, decreaseBillUnit, serviceFee, vat };

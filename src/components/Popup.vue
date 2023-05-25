@@ -13,6 +13,7 @@
             ×
           </button>
         </div>
+        <slot name="top-body"></slot>
         <!--body-->
         <div class="relative flex-1 overflow-y-auto">
           <slot />

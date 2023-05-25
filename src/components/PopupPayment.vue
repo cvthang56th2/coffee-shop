@@ -234,10 +234,10 @@ export default {
       if (v) {
         this.hasChange = false
         let { serviceFee = 0, vat = 0, decreaseBill, decreaseBillUnit, clientMoney = 0 } = this.currentTable.bill || {};
-        if (!decreaseBill) {
+        if (decreaseBill === undefined) {
           decreaseBill = this.appStore.settings?.decreaseBill || 0
         }
-        if (!decreaseBillUnit) {
+        if (decreaseBillUnit === undefined) {
           decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
         }
         this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
