@@ -87,6 +87,7 @@ export default {
         didOpen: (toast) => {
           toast.addEventListener('mouseenter', this.$swal.stopTimer)
           toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+          toast.addEventListener('click', ()=> this.$swal.close())
         }
       })
       OptionServices.updateOption('settings', this.formData)

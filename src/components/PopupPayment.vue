@@ -304,6 +304,7 @@ export default {
         didOpen: (toast) => {
           toast.addEventListener('mouseenter', this.$swal.stopTimer)
           toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+          toast.addEventListener('click', ()=> this.$swal.close())
         }
       })
       let updateData = {
@@ -343,6 +344,7 @@ export default {
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', this.$swal.stopTimer)
               toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+              toast.addEventListener('click', ()=> this.$swal.close())
             }
           })
             OrderServices.updateOrder(this.currentTable.bill.id, {

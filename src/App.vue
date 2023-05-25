@@ -24,6 +24,7 @@ const login = async () => {
     didOpen: (toast) => {
       toast.addEventListener('mouseenter', swal.stopTimer)
       toast.addEventListener('mouseleave', swal.resumeTimer)
+      toast.addEventListener('click', ()=> swal.close())
     }
   })
   
