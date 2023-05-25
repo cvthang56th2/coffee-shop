@@ -7,13 +7,12 @@ import { createPinia } from 'pinia'
 import VueSweetAlert from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 
-import { formatDate, formatCurrency, numberWithCommas } from './utils/utils'
+import { formatDate, numberWithCommas } from './utils/utils'
 import  VueHtmlToPaper from './plugins/VueHtmlToPaper'
 import "vue-select/dist/vue-select.css";
 
 const app = createApp(App)
 app.config.globalProperties.$formatDate = formatDate
-app.config.globalProperties.$formatCurrency = formatCurrency
 app.config.globalProperties.$numberWithCommas = numberWithCommas
 const pinia = createPinia()
 

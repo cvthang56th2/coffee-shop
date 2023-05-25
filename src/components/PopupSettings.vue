@@ -2,7 +2,7 @@
   <Popup
     v-model="isShow"
     @hide="hide"
-    width="768px"
+    width="600px"
     title="Cài đặt"
     :save="saveSettings"
     persistent

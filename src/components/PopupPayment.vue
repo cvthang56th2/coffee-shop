@@ -10,7 +10,7 @@
             <InputMoney
               v-model="formData.serviceFee"
               @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
           </div>
         </div>
@@ -23,7 +23,7 @@
               v-model="formData.decreaseBill"
               @input="hasChange = true"
               :max="formData.decreaseBillUnit === '%' ? 100 : summaryBill"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
             <v-select
               v-model="formData.decreaseBillUnit"
@@ -31,7 +31,7 @@
               :options="['VND', '%']"
               :clearable="false"
               appendToBody
-              class="custom-select bg-white rounded-sm w-full outline-none ml-1"
+              class="custom-select bg-white rounded-sm w-full ml-1"
             />
           </div>
         </div>
@@ -43,7 +43,7 @@
             <InputMoney
               v-model="formData.vat"
               @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
           </div>
         </div>
@@ -54,7 +54,7 @@
           <div>
             <input
               :value="$numberWithCommas(totalBill)"
-              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+              class="bg-gray-300 rounded-sm border-1px w-full px-1"
               disabled
             />
           </div>
@@ -68,7 +68,7 @@
               id="clientMoney"
               v-model="formData.clientMoney"
               @input="hasChange = true"
-              class="bg-white rounded-sm border-1px w-full outline-none px-1"
+              class="bg-white rounded-sm border-1px w-full px-1"
             />
           </div>
         </div>
@@ -79,7 +79,7 @@
           <div>
             <input
               :value="$numberWithCommas(refundMoney)"
-              class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+              class="bg-gray-300 rounded-sm border-1px w-full px-1"
               disabled
             />
           </div>

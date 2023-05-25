@@ -7,13 +7,13 @@
     :save="changeTable"
     :closeOnSave="false"
   >
-    <div class="p-4">
-      <div class="flex mb-3">
-        <div class="pr-4 w-1/3 font-semibold">Từ:</div>
+    <div class="p-4 text-lg">
+      <div class="flex mb-3 items-center">
+        <div class="pr-4 w-1/3 text-right font-medium">Từ bàn:</div>
         <div class="w-2/3 font-bold px-2">khu {{ currentTable.group }} - {{ currentTable.name }}</div>
       </div>
-      <div class="flex">
-        <div class="pr-4 w-1/3 font-semibold">Tới:</div>
+      <div class="flex items-center">
+        <div class="pr-4 w-1/3 text-right font-medium">Tới bàn:</div>
         <div class="w-2/3">
           <v-select class="font-bold" v-model="changeToTable" :options="computedEmptyTables" :reduce="country => country.id" label="formattedName" appendToBody placeholder="Chọn bàn..." :clearable="false"></v-select>
         </div>

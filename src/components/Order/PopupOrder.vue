@@ -99,7 +99,7 @@
                       @input="hasChange = true"
                       type="number"
                       min="0"
-                      class="outline-none max-w-full border-1px rounded-sm"
+                      class="max-w-full border-1px rounded-sm"
                     />
                   </div>
                   <div
@@ -112,7 +112,7 @@
                     <InputMoney
                       v-model="item.decrease"
                       @input="hasChange = true"
-                      class="outline-none max-w-full border-1px rounded-sm"
+                      class="max-w-full border-1px rounded-sm"
                     />
                   </div>
                   <div
@@ -145,7 +145,7 @@
                 <InputMoney
                   v-model="formData.serviceFee"
                   @input="hasChange = true"
-                  class="bg-white rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-white rounded-sm border-1px w-full px-1"
                 />
               </div>
             </div>
@@ -158,7 +158,7 @@
                   v-model="formData.decreaseBill"
                   @input="hasChange = true"
                   :max="formData.decreaseBillUnit === '%' ? 100 : summaryBill"
-                  class="bg-white rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-white rounded-sm border-1px w-full px-1"
                 />
                 <v-select
                   v-model="formData.decreaseBillUnit"
@@ -166,7 +166,7 @@
                   :options="['VND', '%']"
                   :clearable="false"
                   appendToBody
-                  class="custom-select bg-white rounded-sm w-full outline-none ml-1"
+                  class="custom-select bg-white rounded-sm w-full ml-1"
                 />
               </div>
             </div>
@@ -178,7 +178,7 @@
                 <InputMoney
                   v-model="formData.vat"
                   @input="hasChange = true"
-                  class="bg-white rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-white rounded-sm border-1px w-full px-1"
                 />
               </div>
             </div>
@@ -189,7 +189,7 @@
               <div>
                 <input
                   :value="$numberWithCommas(totalBill)"
-                  class="bg-gray-300 rounded-sm border-1px w-full outline-none px-1"
+                  class="bg-gray-300 rounded-sm border-1px w-full px-1"
                   disabled
                 />
               </div>
@@ -207,7 +207,7 @@
               @input="hasChange = true"
               type="text"
               placeholder="Nhập mã hoặc tên..."
-              class="outline-none rounded-md border-1px px-2 py-1 w-full"
+              class="rounded-md border-1px px-2 py-1 w-full"
             />
           </div>
           <div class="flex-1 overflow-x-hidden overflow-y-auto p-2 bg-slate-200">
@@ -284,6 +284,7 @@ import { uid } from "uid";
 import { ORDER_STATUS } from "../../constants/constants";
 import vSelect from "vue-select";
 import { useAppStore } from '../../stores/app.js'
+import { toLowerCaseNonAccentVietnamese } from '../../utils/utils'
 
 export default {
   props: {
@@ -379,10 +380,10 @@ export default {
         };
       });
       if (this.keyword) {
-        const regex = new RegExp(this.toLowerCaseNonAccentVietnamese(this.keyword), "gi");
+        const regex = new RegExp(toLowerCaseNonAccentVietnamese(this.keyword), "gi");
         result = result.filter(
           (e) =>
-            (e.pid && String(e.pid).match(regex)) || (e.name && String(this.toLowerCaseNonAccentVietnamese(e.name)).match(regex))
+            (e.pid && String(e.pid).match(regex)) || (e.name && String(toLowerCaseNonAccentVietnamese(e.name)).match(regex))
         );
       }
       return result;
@@ -402,20 +403,6 @@ export default {
     isShow: false,
   }),
   methods: {
-    toLowerCaseNonAccentVietnamese(str) {
-      str = str.toLowerCase();
-      str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-      str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-      str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-      str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-      str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-      str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-      str = str.replace(/đ/g, "d");
-      // Some system encode vietnamese combining accent as individual utf-8 characters
-      str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
-      str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
-      return str;
-    },
     onChangeDescreaseBillUnit () {
       this.hasChange = true
       this.formData.decreaseBill = 0
