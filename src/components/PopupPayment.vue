@@ -70,7 +70,7 @@
               @input="hasChange = true"
               class="bg-white rounded-sm border-1px w-full px-1"
             />
-            <CheckedIcon class="w-5 h-5 ml-2 cursor-pointer" @click="formData.clientMoney = totalBill" />
+            <CheckedIcon class="w-7 h-7 ml-2 cursor-pointer" @click="formData.clientMoney = totalBill" />
           </div>
         </div>
         <div class="w-full lg:w-1/2 flex px-2">
