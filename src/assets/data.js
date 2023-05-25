@@ -304,13 +304,13 @@ export const products = [
   },
   {
     name: `Trà đào hạt chia`,
-    price: 3000,
+    price: 30000,
     image: "/images/tra-dao-hat-chia.png",
     unit: 'Ly',
   },
   {
     name: `Trà vải hạt chia`,
-    price: 3000,
+    price: 30000,
     image: "/images/tra-vai-hat-chia.png",
     unit: 'Ly',
   },

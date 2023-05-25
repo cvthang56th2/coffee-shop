@@ -87,48 +87,48 @@
       </div>
       <div id="bill-html">
         <div class="text-center font-bold text-2xl mb-2">Ngâu Coffee</div>
-        <div class="text-center italic">Address</div>
-        <div class="text-center italic">Điện thoại: 0123456789</div>
+        <div class="text-center italic">20 Đồng Khởi, Diên Khánh</div>
+        <div class="text-center italic">Điện thoại: 0385.200.948</div>
         <div class="text-center font-bold text-xl mt-2">PHIẾU THANH TOÁN</div>
         <div class="flex mt-4">
           <div class="w-1-2 mr-2">N.viên: admin</div>
           <div class="w-1-2 ml-2 uppercase">HĐ: {{ currentTable.bill.id }}</div>
         </div>
         <div class="flex">
-          <div class="w-1-2 mr-2">Giờ vào: {{ $formatDate(currentTable.bill.createdAt) }}</div>
-          <div class="w-1-2 ml-2">Giờ ra: {{ $formatDate(new Date()) }}</div>
+          <div class="w-1-2 mr-2">Giờ vào: {{ $formatDate(currentTable.bill.createdAt, 'HH:mm') }}</div>
+          <div class="w-1-2 ml-2">Giờ ra: {{ $formatDate(new Date(), 'HH:mm') }}</div>
         </div>
         <div class="flex font-bold">
           <div class="w-1-2 mr-2">Khu vực: {{ currentTable.group }}</div>
           <div class="w-1-2 ml-2">Bàn: {{ isRetail ? 'Bán lẻ' : currentTable.name }}</div>
         </div>
-        <div class="flex mt-2">
-          <div class="w-4-12 px-2 py-1 text-center font-bold border-1px border-black">Món</div>
-          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">S.L</div>
-          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">
+        <div class="flex mt-2 border-b-2px">
+          <div class="w-5-12 px-2 py-1 text-center font-bold">Món</div>
+          <div class="w-2-12 px-2 py-1 text-center font-bold">S.L</div>
+          <div class="w-2-12 px-2 py-1 text-center font-bold">
             Đ.Giá
           </div>
-          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">CK</div>
-          <div class="w-2-12 px-2 py-1 text-center font-bold border-1px border-black">
+          <div class="w-1-12 px-2 py-1 text-center font-bold">CK</div>
+          <div class="w-2-12 px-2 py-1 text-center font-bold">
             T.Tiền
           </div>
         </div>
         <div
           v-for="(item, iIndex) in currentTable.bill.items"
-          class="flex"
+          class="flex border-b-2px"
           :key="`bill-order-item-${iIndex}`"
         >
-          <div class="w-4-12 px-2 py-1 border-1px border-black">{{ item.name }}</div>
-          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
+          <div class="w-5-12 px-2 py-1">{{ item.name }}</div>
+          <div class="w-2-12 px-2 py-1 text-center">
             {{ item.quantity }}
           </div>
-          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
+          <div class="w-2-12 px-2 py-1 text-center">
             {{ $numberWithCommas(item.price) }}
           </div>
-          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
+          <div class="w-1-12 px-2 py-1 text-center">
             {{ item.decrease }}
           </div>
-          <div class="w-2-12 px-2 py-1 text-right border-1px border-black">
+          <div class="w-2-12 px-2 py-1 text-center">
             {{ $numberWithCommas(getItemTotal(item)) }}
           </div>
         </div>
@@ -140,7 +140,7 @@
             </div>
           </div>
           <div class="flex mt-2">
-            <div class="w-1-2 mr-2">Giảm giá:
+            <div>Giảm giá:
               <template v-if="formData.decreaseBill">
                 - {{ $numberWithCommas(decreaseBillValue) }} ({{ formData.decreaseBill }} {{ formData.decreaseBillUnit }})
               </template>
@@ -152,9 +152,9 @@
             </div>
           </div>
           <div class="flex mt-2">
-            <div class="w-1-2 mr-2">Khách đưa: {{ $numberWithCommas(formData.clientMoney) }} <span class="italic">VNĐ</span></div>
+            <div class="w-1-2 mr-2">Khách đưa: {{ $numberWithCommas(formData.clientMoney) }}</div>
             <div class="w-1-2 ml-2">
-              Trả lại: {{ $numberWithCommas(refundMoney) }} <span class="italic">VNĐ</span>
+              Trả lại: {{ $numberWithCommas(refundMoney) }}
             </div>
           </div>
         </div>
