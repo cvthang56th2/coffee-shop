@@ -63,13 +63,14 @@
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Khách đưa
           </div>
-          <div>
+          <div class="flex items-center">
             <InputMoney
               id="clientMoney"
               v-model="formData.clientMoney"
               @input="hasChange = true"
               class="bg-white rounded-sm border-1px w-full px-1"
             />
+            <CheckedIcon class="w-5 h-5 ml-2 cursor-pointer" @click="formData.clientMoney = totalBill" />
           </div>
         </div>
         <div class="w-full lg:w-1/2 flex px-2">
@@ -205,6 +206,7 @@ import { ORDER_STATUS } from '../constants/constants'
 import InputMoney from "./InputMoney.vue";
 import vSelect from "vue-select";
 import { useAppStore } from '../stores/app'
+import CheckedIcon from "./icons/Checked.vue";
 
 export default {
   props: {
@@ -224,6 +226,7 @@ export default {
   components: {
     Popup,
     InputMoney,
+    CheckedIcon,
     vSelect
   },
   setup () {
