@@ -1,7 +1,7 @@
 <template>
   <div class="transition-all duration-300 ease-in-out" :class="modelValue ? 'opacity-1' : 'opacity-0'">
-    <div v-if="modelValue" class="fixed bg-[rgba(0,0,0,.5)] h-screen w-screen top-0 left-0 z-50 outline-none focus:outline-none md:items-center flex shadow-xl" @click="persistent && hide()">
-      <div class="`relative m-auto max-w-[95vw] max-h-[80vh] md:max-h-full overflow-auto bg-white flex flex-col rounded-md shadow-lg" :style="`width: ${width}`" @click.stop>
+    <div v-if="modelValue" class="fixed bg-[rgba(0,0,0,.5)] inset-0 z-50 outline-none focus:outline-none md:items-center md:flex shadow-xl" @click="persistent && hide()">
+      <div class="relative my-6 mx-auto max-w-[95vw] max-h-[80vh] md:max-h-full overflow-auto bg-white flex flex-col rounded-md shadow-lg" :style="`width: ${width}`" @click.stop>
         <!--header-->
         <div class="p-4 pr-8 border-b border-solid border-slate-200 rounded-t relative flex-0">
           <slot name="title">
