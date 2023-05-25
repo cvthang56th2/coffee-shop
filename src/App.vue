@@ -85,7 +85,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="isMounted" class="h-screen flex flex-col">
+  <div v-if="isMounted" class="h-[100svh] flex flex-col">
     <template v-if="isLogin">
       <header class="border-b-2 mb-2 flex-0 relative px-4">
         <div class="flex lg:justify-center text-xl md:text-2xl lg:text-3xl py-2 font-bold text-amber-600">
@@ -172,7 +172,7 @@ onMounted(() => {
     </div>
   </div>
   
-  <div v-else class="h-screen w-screen flex items-center justify-center">
+  <div v-else class="h-[100svh] w-[100svw] flex items-center justify-center">
     <div class="load-3 flex">
       <div class="flex justify-center">
         <div class="line"></div>

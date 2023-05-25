@@ -62,7 +62,7 @@
       </div>
     </template>
     <div
-      class="h-[calc(100vh_-_330px)] lg:h-[calc(100vh_-_150px)] overflow-y-auto flex flex-col"
+      class="h-[calc(100svh_-_200px)] lg:h-[calc(100svh_-_150px)] overflow-y-auto flex flex-col"
     >
       <div class="flex flex-wrap overflow-y-auto flex-1">
         <div
