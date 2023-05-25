@@ -59,7 +59,7 @@
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 flex px-2">
+        <div class="w-full lg:w-1/2 flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Khách đưa
           </div>
