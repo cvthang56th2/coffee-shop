@@ -15,7 +15,7 @@
         </div>
         <slot name="top-body"></slot>
         <!--body-->
-        <div class="relative flex-1 overflow-y-auto">
+        <div class="relative flex-1 overflow-y-auto max-h-[calc(100svh_-_200px)] lg:max-h-[calc(100svh_-_150px)]">
           <slot />
         </div>
         <!--footer-->
