@@ -92,27 +92,17 @@ onMounted(() => {
           <img :src="Favicon" alt="icon" class="w-[30px] lg:w-[40px] mr-2">
           Ngâu Coffee
         </div>
-        <button class="absolute top-2 right-[115px] lg:right-[130px] bg-cyan-400 hover:bg-cyan-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 lg:px-4 lg:py-2" @click="isShowPopupSettings = true">
+        <div class="bg-cyan-400 hover:bg-cyan-600 ease-linear transition-all duration-150 px-2 py-1 lg:px-4 lg:py-2 cursor-pointer absolute top-2 right-4 group">
+          <span class="text-white font-semibold">
           Cài đặt
-        </button>
-        <button class="absolute top-2 right-4 bg-amber-400 hover:bg-amber-600 ease-linear transition-all duration-150 text-white font-semibold px-2 py-1 lg:px-4 lg:py-2" @click="logout">
-          Khóa máy
-        </button>
-        <!-- <div>
-          <ul class="flex items-center py-2">
-            <li class="px-2 font-semibold cursor-pointer text-amber-600 hover:text-orange-500 border-r-2 mr-2">
-              <a href="#">
-                <div class="flex items-center">
-                  <img :src="Favicon" alt="icon" width="40" class="mr-2">
-                  Trang chủ
-                </div>
-              </a>
-            </li>
-            <li class="px-2 font-semibold cursor-pointer text-amber-600 hover:text-orange-500">
-              <a href="#">Quản lý</a>
-            </li>
-          </ul>
-        </div> -->
+          </span>
+          <div class="absolute bg-white border-[1px] w-[150px] right-0  group-hover:block">
+            <ul>
+              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
+              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
+            </ul>
+          </div>
+        </div>
       </header>
       <main class="p-1 flex-1 overflow-y-auto">
         <router-view></router-view>
