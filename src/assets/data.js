@@ -338,6 +338,18 @@ export const products = [
     image: "/images/tra-gung.png",
     unit: 'Ly',
   },
+  {
+    name: `[GÓI] Thuốc COTAB`,
+    price: 15000,
+    image: "/images/cotab.jpg",
+    unit: 'Gói',
+  },
+  {
+    name: `[ĐIẾU] Thuốc COTAB`,
+    price: 1000,
+    image: "/images/cotab-dieu.jpg",
+    unit: 'Điếu',
+  },
 ].map((e, i) => ({
   ...e,
   id: `product-${i + 1}`,
