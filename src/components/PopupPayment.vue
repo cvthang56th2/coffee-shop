@@ -323,9 +323,7 @@ export default {
         ...this.formData
       }
       this.printBill()
-      if (this.hasChange) {
-        OrderServices.updateOrder(this.currentTable.bill.id, updateData)
-      }
+      OrderServices.updateOrder(this.currentTable.bill.id, updateData)
       Toast.fire({
         icon: 'success',
         title: 'Thanh toán thành công!'
