@@ -94,8 +94,8 @@
         <div class="text-center italic">Điện thoại: 0385.200.948</div>
         <div class="text-center font-bold text-xl mt-2">PHIẾU THANH TOÁN</div>
         <div class="flex mt-4">
-          <div class="w-1-2 mr-2">N.viên: admin</div>
-          <div class="w-1-2 ml-2 uppercase">HĐ: {{ currentTable.bill.id }}</div>
+          <div class="w-1-2 mr-2 uppercase">HĐ: {{ currentTable.bill.id }}</div>
+          <!-- <div class="w-1-2 ml-2">N.viên: admin</div> -->
         </div>
         <div class="flex">
           <div class="w-1-2 mr-2">Giờ vào: {{ $formatDate(currentTable.bill.createdAt, 'HH:mm') }}</div>
@@ -105,7 +105,7 @@
           <div class="w-1-2 mr-2">Khu vực: {{ currentTable.group }}</div>
           <div class="w-1-2 ml-2">Bàn: {{ isRetail ? 'Bán lẻ' : currentTable.name }}</div>
         </div>
-        <div class="flex mt-2 border-b-2px">
+        <div class="flex mt-2 border-b-2px table-text">
           <div class="w-5-12 px-2 py-1 text-center font-bold">Món</div>
           <div class="w-2-12 px-2 py-1 text-center font-bold">S.L</div>
           <div class="w-2-12 px-2 py-1 text-center font-bold">
@@ -118,7 +118,7 @@
         </div>
         <div
           v-for="(item, iIndex) in currentTable.bill.items"
-          class="flex border-b-2px"
+          class="flex border-b-2px table-text"
           :key="`bill-order-item-${iIndex}`"
         >
           <div class="w-5-12 px-2 py-1">{{ item.name }}</div>
@@ -150,9 +150,9 @@
               <span v-else>0</span>
             </div>
           </div>
-          <div class="flex mt-2">
+          <div class="flex pt-2">
             <div class="font-bold">
-              Thành tiền: {{ $numberWithCommas(totalBill) }} <span class="italic">VNĐ</span>
+              Thành tiền: <span class="total">{{ $numberWithCommas(totalBill) }}</span> <span class="italic">VNĐ</span>
             </div>
           </div>
           <!-- <div class="flex mt-2">
