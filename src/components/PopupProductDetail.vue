@@ -46,6 +46,13 @@
           />
         </div>
       </div>
+      <div class="flex mb-1">
+        <div class="pr-4 w-1/3 font-semibold"></div>
+        <div class="w-2/3 px-2 flex items-center">
+          <div class="w-[75px] h-[150px] bg-center bg-cover bg-no-repeat border-2" :style="`background-image: url(${formData.image})`">
+          </div>
+        </div>
+      </div>
     </div>
   </Popup>
 </template>
