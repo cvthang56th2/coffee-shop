@@ -27,7 +27,7 @@
         <div v-for="(product, pIndex) in computedProducts" :key="`product-${pIndex}`" class="flex border-b-[1px] border-b-gray-500">
           <div class="w-1/12 px-2 py-1 text-center">{{ product.pid }}</div>
           <div class="w-4/12 px-2 py-1 text-center">{{ product.name }}</div>
-          <div class="w-3/12 px-2 py-1 text-center">{{ product.price }}</div>
+          <div class="w-3/12 px-2 py-1 text-center">{{ $numberWithCommas(product.price) }}</div>
           <div class="w-2/12 px-2 py-1 text-center">{{ product.unit }}</div>
           <div class="w-2/12 px-2 py-1 text-center flex items-center justify-center">
             <button class="text-green-500 font-bold hover:text-green-800 mr-2" @click="editProduct(product.originIndex)">Chỉnh sửa</button>
