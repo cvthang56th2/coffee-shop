@@ -11,7 +11,7 @@
     <template v-slot:buttons>
       <div></div>
     </template>
-    <div class="p-4 text-xs md:text-base overflow-x-auto min-w-[750px]">
+    <div class="p-4 text-sm md:text-base overflow-x-auto min-w-[670px]">
       <div class="mb-2 pb-1 border-b-2 flex items-center">
         <input v-model="keyword" type="text" class="w-1/3 border-1px px-2 py-1" placeholder="Nhập mã, thời gian tạo hay cập nhật cuối...">
       </div>
@@ -21,7 +21,7 @@
         <div class="w-3/12 px-2 py-1 font-semibold text-gray-600 text-center">Cập nhật cuối</div>
         <div class="w-2/12 px-2 py-1 font-semibold text-gray-600 text-center">Trạng thái</div>
         <div class="w-2/12 px-2 py-1 font-semibold text-gray-600 text-center">Tổng bill</div>
-        <div class="w-1/12 px-2 py-1 font-semibold text-gray-600 text-center">Hành động</div>
+        <div class="w-1/12 px-2 py-1 font-semibold text-gray-600 text-center truncate">Hành động</div>
       </div>
       <template v-if="orders.length">
         <div v-for="(order, oIndex) in computedOrders" :key="`order-his-${oIndex}`" class="flex border-b-[1px] border-b-gray-500">
@@ -30,7 +30,7 @@
           <div class="w-3/12 px-2 py-1 text-center">{{ $formatDate(order.updatedAt) }}</div>
           <div class="w-2/12 px-2 py-1 text-center" :class="MAP_ORDER_STATUS_COLOR[order.status]">{{ MAP_ORDER_STATUS[order.status] || '' }}</div>
           <div class="w-2/12 px-2 py-1 text-center">{{ $numberWithCommas(order.total) }}</div>
-          <div class="w-1/12 px-2 py-1 text-center">
+          <div class="w-1/12 px-2 py-1 text-center truncate">
             <button class="text-green-500 font-bold hover:text-green-800" @click="editOrder(order.originIndex)">Chỉnh sửa</button>
           </div>
         </div>

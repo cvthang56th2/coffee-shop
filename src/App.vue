@@ -105,10 +105,10 @@ onMounted(() => {
           </span>
           <div class="absolute bg-white border-[1px] w-[150px] right-0 hidden group-hover:block">
             <ul>
-              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupOrdersHistory = true">Order</li>
-              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupProductManagement = true">Sản phẩm</li>
-              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
-              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
+              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupOrdersHistory = true">Order</li>
+              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupProductManagement = true">Sản phẩm</li>
+              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
+              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
             </ul>
           </div>
         </div>

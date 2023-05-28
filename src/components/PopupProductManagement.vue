@@ -11,7 +11,7 @@
     <template v-slot:buttons>
       <div></div>
     </template>
-    <div class="p-4 text-xs md:text-base overflow-x-auto min-w-[750px]">
+    <div class="p-4 text-sm md:text-base overflow-x-auto min-w-[750px]">
       <div class="mb-2 pb-1 border-b-2 flex justify-between items-center">
         <button class="px-4 py-2 bg-green-500 text-white hover:bg-green-700" @click="addProduct">Thêm mới</button>
         <input v-model="keyword" type="text" class="w-1/3 border-1px px-2 py-1" placeholder="Nhập mã hoặc tên...">
