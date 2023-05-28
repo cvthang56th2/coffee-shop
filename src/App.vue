@@ -5,12 +5,16 @@ import AuthServices from './firebase/auth/auth'
 import UserServices from './firebase/user/user'
 import OptionServices from './firebase/option/option'
 import PopupSettings from './components/PopupSettings.vue'
+import PopupProductManagement from './components/PopupProductManagement.vue'
 import PopupOrdersHistory from './components/PopupOrdersHistory.vue'
 import { useAppStore } from './stores/app'
+import { useProductStore } from './stores/product'
 
 const swal = inject('$swal')
 const appStore = useAppStore()
+const productStore = useProductStore()
 const isShowPopupSettings = ref(false)
+const isShowPopupProductManagement = ref(false)
 const isShowPopupOrdersHistory = ref(false)
 const isLogin = ref(false)
 const formData = ref({
@@ -79,6 +83,7 @@ onMounted(() => {
       if (userInfo) {
         isLogin.value = true
         getSettings()
+        productStore.getProducts()
       }
     }
     isMounted.value = true
@@ -101,6 +106,7 @@ onMounted(() => {
           <div class="absolute bg-white border-[1px] w-[150px] right-0 hidden group-hover:block">
             <ul>
               <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupOrdersHistory = true">Order</li>
+              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupProductManagement = true">Sản phẩm</li>
               <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
               <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
             </ul>
@@ -112,6 +118,7 @@ onMounted(() => {
       </main>
       <PopupSettings v-model="isShowPopupSettings" />
       <PopupOrdersHistory v-model="isShowPopupOrdersHistory" />
+      <PopupProductManagement v-model="isShowPopupProductManagement" />
     </template>
     
     <div v-else class="px-6 h-full text-gray-800">

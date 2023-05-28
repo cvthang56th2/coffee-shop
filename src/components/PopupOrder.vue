@@ -282,13 +282,13 @@ import ClockIcon from '../components/icons/Clock.vue'
 import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
 import InputMoney from "./InputMoney.vue";
 import Popup from "./Popup.vue";
-import { products } from "../assets/data";
 import OrderServices from "../firebase/order/order";
 import { uid } from "uid";
 import { ORDER_STATUS } from "../constants/constants";
 import vSelect from "vue-select";
 import { useAppStore } from '../stores/app.js'
 import { toLowerCaseNonAccentVietnamese } from '../utils/utils'
+import { useProductStore } from '../stores/product';
 
 export default {
   props: {
@@ -313,13 +313,15 @@ export default {
   },
   setup () {
     const appStore = useAppStore()
-    return { appStore }
+    const productStore = useProductStore()
+    return { appStore, productStore }
   },
   watch: {
     modelValue(v) {
       this.isShow = v;
       clearInterval(this.timeInterval);
       if (v) {
+        this.products = this.productStore.products
         this.hasChange = false;
         let {
           id,
@@ -395,6 +397,7 @@ export default {
     },
   },
   data: () => ({
+    products: [],
     currentTab: "menu",
     timeInterval: null,
     hasChange: false,
@@ -404,7 +407,6 @@ export default {
     formData: {
       items: [],
     },
-    products,
     isShow: false,
   }),
   methods: {

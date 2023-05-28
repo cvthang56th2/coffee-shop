@@ -104,7 +104,7 @@ const onSavePayment = () => {
 const cancelOrder = () => {
   if (selectedTable.value.bill?.id) {
     swal.fire({
-      title: 'Bạn có chắc muốn bill bàn này không?',
+      title: 'Bạn có chắc muốn hủy bill bàn này không?',
       showCancelButton: true,
       cancelButtonText: 'Không',
       confirmButtonText: 'Có',
