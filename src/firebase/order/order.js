@@ -87,12 +87,22 @@ class orderServices {
     }
   }
 
+  async getAllOrders(options = {}) {
+    try {
+      const q = query(collection(db, ORDER), orderBy("updatedAt", 'desc'))
+      const querySnapshot = await getDocs(q);
+      return snapshotToArray(querySnapshot)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
   getOrdersSnapshot(callback, { status }) {
     let q
     if (status) {
-      q = query(collection(db, ORDER), orderBy("createdAt"), where("status", "==", status))
+      q = query(collection(db, ORDER), orderBy("createdAt", 'desc'), where("status", "==", status))
     } else {
-      q = query(collection(db, ORDER), orderBy("createdAt"))
+      q = query(collection(db, ORDER), orderBy("createdAt", 'desc'))
     }
     if (typeof this.unsubscribeOrders === 'function') {
       this.unsubscribeOrders()

@@ -5,11 +5,13 @@ import AuthServices from './firebase/auth/auth'
 import UserServices from './firebase/user/user'
 import OptionServices from './firebase/option/option'
 import PopupSettings from './components/PopupSettings.vue'
+import PopupOrdersHistory from './components/PopupOrdersHistory.vue'
 import { useAppStore } from './stores/app'
 
 const swal = inject('$swal')
 const appStore = useAppStore()
 const isShowPopupSettings = ref(false)
+const isShowPopupOrdersHistory = ref(false)
 const isLogin = ref(false)
 const formData = ref({
   email: 'admin@coffee.com'
@@ -96,8 +98,9 @@ onMounted(() => {
           <span class="text-white font-semibold">
           Cài đặt
           </span>
-          <div class="absolute bg-white border-[1px] w-[150px] right-0  group-hover:block">
+          <div class="absolute bg-white border-[1px] w-[150px] right-0 hidden group-hover:block">
             <ul>
+              <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupOrdersHistory = true">Order</li>
               <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
               <li class="px-3 py-1 text-black hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
             </ul>
@@ -108,6 +111,7 @@ onMounted(() => {
         <router-view></router-view>
       </main>
       <PopupSettings v-model="isShowPopupSettings" />
+      <PopupOrdersHistory v-model="isShowPopupOrdersHistory" />
     </template>
     
     <div v-else class="px-6 h-full text-gray-800">

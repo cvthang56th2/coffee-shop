@@ -1,0 +1,131 @@
+<template>
+  <Popup
+    v-model="isShow"
+    @hide="hide"
+    width="100svw"
+    title="Lịch sử Order"
+    persistent
+    :closeOnSave="false"
+    confirmText="Lưu"
+  >
+    <template v-slot:buttons>
+      <div></div>
+    </template>
+    <div class="p-4 text-xs md:text-base overflow-x-auto min-w-[750px]">
+      <div class="flex border-b-[1px] border-b-gray-500">
+        <div class="w-1/12 px-2 py-1 font-semibold text-gray-600 text-center">ID</div>
+        <div class="w-3/12 px-2 py-1 font-semibold text-gray-600 text-center">Thời gian tạo</div>
+        <div class="w-3/12 px-2 py-1 font-semibold text-gray-600 text-center">Cập nhật cuối</div>
+        <div class="w-2/12 px-2 py-1 font-semibold text-gray-600 text-center">Trạng thái</div>
+        <div class="w-2/12 px-2 py-1 font-semibold text-gray-600 text-center">Tổng bill</div>
+        <div class="w-1/12 px-2 py-1 font-semibold text-gray-600 text-center">Hành động</div>
+      </div>
+      <div v-for="(order, oIndex) in orders" :key="`order-his-${oIndex}`" class="flex border-b-[1px] border-b-gray-500">
+        <div class="w-1/12 px-2 py-1 text-center uppercase">{{ order.id }}</div>
+        <div class="w-3/12 px-2 py-1 text-center">{{ $formatDate(order.createdAt) }}</div>
+        <div class="w-3/12 px-2 py-1 text-center">{{ $formatDate(order.updatedAt) }}</div>
+        <div class="w-2/12 px-2 py-1 text-center" :class="MAP_ORDER_STATUS_COLOR[order.status]">{{ MAP_ORDER_STATUS[order.status] || '' }}</div>
+        <div class="w-2/12 px-2 py-1 text-center">{{ $numberWithCommas(order.total) }}</div>
+        <div class="w-1/12 px-2 py-1 text-center">
+          <button class="text-green-500 font-bold hover:text-green-800" @click="editOrder(oIndex)">Chỉnh sửa</button>
+        </div>
+      </div>
+    </div>
+    <PopupPayment
+      v-model="isShowPopupPayment"
+      :currentTable="currentTable"
+      :isRetail="isRetail"
+      persistent
+      isEditMode
+      @saved="onSavePayment"
+    />
+  </Popup>
+</template>
+
+<script>
+import Popup from "./Popup.vue";
+import vSelect from "vue-select";
+import OrderServices from '../firebase/order/order'
+import InputMoney from "./InputMoney.vue";
+import { useAppStore } from '../stores/app'
+import { MAP_ORDER_STATUS, MAP_ORDER_STATUS_COLOR } from '../constants/constants'
+import { listTables } from '../assets/data'
+import PopupPayment from "./PopupPayment.vue";
+
+export default {
+  props: {
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    Popup,
+    InputMoney,
+    PopupPayment,
+    vSelect
+  },
+  setup () {
+    const appStore = useAppStore()
+    return { appStore }
+  },
+  watch: {
+    modelValue(v) {
+      this.isShow = v
+      if (v) {
+        this.selectedOrderIndex = null
+        this.getOrders()
+      }
+    },
+  },
+  computed: {
+    selectedOrder () {
+      return JSON.parse(JSON.stringify(this.orders[this.selectedOrderIndex] || {}))
+    },
+    isRetail () {
+      return this.selectedOrder?.tableId === 'retail'
+    },
+    currentTable () {
+      if (this.selectedOrderIndex === null) {
+        return { bill: {} }
+      }
+      let table = {}
+      let result = { bill: this.selectedOrder }
+      if (!this.isRetail) {
+        table = listTables.find(e => e.id === this.selectedOrder.tableId)
+      }
+      result = {
+        ...(JSON.parse(JSON.stringify(table || {}))),
+        bill: this.selectedOrder
+      }
+      return result
+    }
+  },
+  data: () => ({
+    selectedOrderIndex: null,
+    isShow: false,
+    isShowPopupPayment: false,
+    MAP_ORDER_STATUS,
+    MAP_ORDER_STATUS_COLOR,
+    orders: []
+  }),
+  methods: {
+    hide () {
+      this.$emit("update:modelValue", false);
+    },
+    async getOrders () {
+      const data = await OrderServices.getAllOrders()
+      this.orders = data || []
+    },
+    editOrder (oIndex) {
+      this.selectedOrderIndex = oIndex
+      this.isShowPopupPayment = true
+    },
+    onSavePayment (data) {
+      this.orders[this.selectedOrderIndex] = data
+      this.selectedOrderIndex = null
+    }
+  },
+};
+</script>
+

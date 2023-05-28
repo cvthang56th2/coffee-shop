@@ -278,17 +278,17 @@
 </template>
 
 <script>
-import ClockIcon from '../../components/icons/Clock.vue'
-import CheckedIcon from "../../assets/images/success-green-check-mark-icon.png";
-import InputMoney from "../InputMoney.vue";
-import Popup from "../Popup.vue";
-import { products } from "../../assets/data";
-import OrderServices from "../../firebase/order/order";
+import ClockIcon from '../components/icons/Clock.vue'
+import CheckedIcon from "../assets/images/success-green-check-mark-icon.png";
+import InputMoney from "./InputMoney.vue";
+import Popup from "./Popup.vue";
+import { products } from "../assets/data";
+import OrderServices from "../firebase/order/order";
 import { uid } from "uid";
-import { ORDER_STATUS } from "../../constants/constants";
+import { ORDER_STATUS } from "../constants/constants";
 import vSelect from "vue-select";
-import { useAppStore } from '../../stores/app.js'
-import { toLowerCaseNonAccentVietnamese } from '../../utils/utils'
+import { useAppStore } from '../stores/app.js'
+import { toLowerCaseNonAccentVietnamese } from '../utils/utils'
 
 export default {
   props: {

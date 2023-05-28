@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" >
+  <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" :persistent="persistent">
     <template v-slot:top-body>
       <div class="flex flex-wrap mb-4 py-2 flex-0 border-b-2">
         <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
@@ -59,7 +59,7 @@
             />
           </div>
         </div>
-        <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
+        <!-- <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Khách đưa
           </div>
@@ -72,8 +72,8 @@
             />
             <CheckedIcon class="w-7 h-7 ml-2 cursor-pointer" @click="formData.clientMoney = totalBill" />
           </div>
-        </div>
-        <div class="w-full lg:w-1/2 items-center flex px-2">
+        </div> -->
+        <!-- <div class="w-full lg:w-1/2 items-center flex px-2">
           <div class="flex-[0_0_100px] text-right pr-2 font-semibold">
             Trả lại
           </div>
@@ -84,7 +84,7 @@
               disabled
             />
           </div>
-        </div>
+        </div> -->
       </div>
     </template>
     <div class="max-h-[calc(100svh_-_350px)] lg:max-h-[calc(100svh_-_300px)] p-4">
@@ -150,7 +150,7 @@
               <span v-else>0</span>
             </div>
           </div>
-          <div class="flex mt-2">
+          <!-- <div class="flex mt-2">
             <div class="font-bold">
               Thành tiền: {{ $numberWithCommas(totalBill) }} <span class="italic">VNĐ</span>
             </div>
@@ -160,7 +160,7 @@
             <div class="w-1-2 ml-2">
               Trả lại: {{ $numberWithCommas(refundMoney) }}
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="flex justify-center mt-4">
           <div class="w-5-6 border-1px border-black"></div>
@@ -171,25 +171,23 @@
     <template v-slot:buttons>
       <div class="flex justify-end p-3">
         <button
-          v-if="isRetail"
-          class="bg-red-500 w-1/3 text-white hover:bg-red-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
+          class="bg-red-500 w-1/2 text-white hover:bg-red-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
           type="button"
           @click="cancelOrder"
         >
-          Hủy
+          Hủy bill
         </button>
-        <button
+        <!-- <button
           class="bg-blue-500 text-white hover:bg-blue-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
           type="button"
           :class="isRetail ? 'ml-2 w-1/3' : 'w-1/2'"
           @click="printBill"
         >
           In hoá đơn
-        </button>
+        </button> -->
         <button
-          class="bg-green-500 w-1/2 text-white hover:bg-green-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm ml-2"
+          class="bg-green-500 text-white w-1/2 hover:bg-green-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm ml-2"
           type="button"
-          :class="isRetail ? 'w-1/3' : 'w-1/2'"
           @click="savePayment"
         >
           Xác nhận
@@ -215,6 +213,14 @@ export default {
       default: false,
     },
     isRetail: {
+      type: Boolean,
+      default: false,
+    },
+    isEditMode: {
+      type: Boolean,
+      default: false,
+    },
+    persistent: {
       type: Boolean,
       default: false,
     },
@@ -246,12 +252,12 @@ export default {
           decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
         }
         this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
-        this.$nextTick(() => {
-          const clientInputEl = document.querySelector('#clientMoney')
-          if (clientInputEl && typeof clientInputEl.focus === 'function') {
-            clientInputEl.focus()
-          }
-        })
+        // this.$nextTick(() => {
+        //   const clientInputEl = document.querySelector('#clientMoney')
+        //   if (clientInputEl && typeof clientInputEl.focus === 'function') {
+        //     clientInputEl.focus()
+        //   }
+        // })
       }
     },
   },
@@ -313,22 +319,23 @@ export default {
         }
       })
       let updateData = {
-        status: ORDER_STATUS.success
+        status: ORDER_STATUS.success,
+        ...this.formData
       }
+      this.printBill()
       if (this.hasChange) {
-        updateData = {
-          ...updateData,
-          ...this.formData
-        }
+        OrderServices.updateOrder(this.currentTable.bill.id, updateData)
       }
-      OrderServices.updateOrder(this.currentTable.bill.id, updateData)
       Toast.fire({
         icon: 'success',
         title: 'Thanh toán thành công!'
       })
       this.appStore.getStatisticToday()
       // call api
-      this.$emit('saved')
+      this.$emit('saved', {
+        ...this.currentTable.bill,
+        ...updateData
+      })
       this.hide()
     },
     cancelOrder() {
@@ -356,6 +363,12 @@ export default {
             OrderServices.updateOrder(this.currentTable.bill.id, {
               status: ORDER_STATUS.cancel
             })
+            if (this.isEditMode) {
+              this.$emit('saved', {
+                ...this.currentTable.bill,
+                status: ORDER_STATUS.cancel
+              })
+            }
             Toast.fire({
               icon: 'success',
               title: 'Hủy bill thành công!'

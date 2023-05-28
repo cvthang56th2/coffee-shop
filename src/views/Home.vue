@@ -1,5 +1,5 @@
 <script setup>
-import PopupOrder from "../components/Order/PopupOrder.vue";
+import PopupOrder from "../components/PopupOrder.vue";
 import PopupChangeTable from "../components/PopupChangeTable.vue";
 import PopupPayment from "../components/PopupPayment.vue";
 import NoCustomerImg from "../assets/images/icons8-restaurant-noCustomer.png";
