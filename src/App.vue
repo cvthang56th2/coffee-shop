@@ -13,6 +13,7 @@ import { useProductStore } from './stores/product'
 const swal = inject('$swal')
 const appStore = useAppStore()
 const productStore = useProductStore()
+const isOpenMenu = ref(false)
 const isShowPopupSettings = ref(false)
 const isShowPopupProductManagement = ref(false)
 const isShowPopupOrdersHistory = ref(false)
@@ -76,6 +77,9 @@ const getSettings = async () => {
 }
 const isMounted = ref(false)
 onMounted(() => {
+  document.addEventListener('click', () => {
+    isOpenMenu.value = false
+  })
   AuthServices.onAuthStateChanged(async (res) => {
     const { uid } = res || {}
     if (uid) {
@@ -99,18 +103,16 @@ onMounted(() => {
           <img :src="Favicon" alt="icon" class="w-[30px] lg:w-[40px] mr-2">
           Ngâu Coffee
         </div>
-        <div class="bg-cyan-400 hover:bg-cyan-600 ease-linear transition-all duration-150 px-2 py-1 lg:px-4 lg:py-2 cursor-pointer absolute top-2 right-4 group">
-          <span class="text-white font-semibold">
+        <button class="bg-cyan-400 hover:bg-cyan-600 ease-linear transition-all duration-150 px-2 py-1 lg:px-4 lg:py-2 absolute top-2 right-4 group text-white font-semibold" @click.stop="isOpenMenu = true">
           Cài đặt
-          </span>
-          <div class="absolute bg-white border-[1px] w-[150px] right-0 hidden group-hover:block">
-            <ul>
-              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupOrdersHistory = true">Order</li>
-              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupProductManagement = true">Sản phẩm</li>
-              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
-              <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
-            </ul>
-          </div>
+        </button>
+        <div v-if="isOpenMenu" class="absolute bg-white border-[1px] w-[150px] right-3 z-10 top-full -mt-1">
+          <ul>
+            <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupOrdersHistory = true">Order</li>
+            <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupProductManagement = true">Sản phẩm</li>
+            <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="isShowPopupSettings = true">Hệ thống</li>
+            <li class="px-3 py-1 text-black ease-linear transition-all duration-150 hover:bg-green-400 hover:text-white block cursor-pointer text-center" @click="logout">Khóa máy</li>
+          </ul>
         </div>
       </header>
       <main class="p-1 flex-1 overflow-y-auto">
