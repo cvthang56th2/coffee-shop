@@ -38,6 +38,9 @@
       <div v-else class="px-2 py-1 text-center">
         Chưa có order nào.
       </div>
+      <div v-if="nextPageAvailable" class="text-center mt-3">
+        <button class="px-4 py-2 bg-cyan-700 hover:bg-cyan-400 ease-linear transition-all duration-150 text-white" @click="getOrders(true)">Tài thêm</button>
+      </div>
     </div>
     <PopupPayment
       v-model="isShowPopupPayment"
@@ -83,7 +86,9 @@ export default {
       this.isShow = v
       if (v) {
         this.selectedOrderIndex = null
-        this.getOrders()
+        if (!this.orders.length) {
+          this.getOrders()
+        }
       }
     },
   },
@@ -133,15 +138,27 @@ export default {
     isShowPopupPayment: false,
     MAP_ORDER_STATUS,
     MAP_ORDER_STATUS_COLOR,
-    orders: []
+    orders: [],
+    lastVisible: null,
+    nextPageAvailable: false
   }),
   methods: {
     hide () {
       this.$emit("update:modelValue", false);
     },
-    async getOrders () {
-      const data = await OrderServices.getAllOrders()
-      this.orders = data || []
+    async getOrders (isNextPage = false) {
+      const { data, lastVisible, nextPageAvailable } = await OrderServices.getAllOrders({
+        isNextPage,
+        lastVisible: this.lastVisible,
+        nextPageAvailable: this.nextPageAvailable,
+      })
+      this.lastVisible = lastVisible
+      this.nextPageAvailable = nextPageAvailable
+      if (isNextPage) {
+        this.orders = [...this.orders, ...(data || [])]
+      } else {
+        this.orders = data || []
+      }
     },
     editOrder (oIndex) {
       this.selectedOrderIndex = oIndex
