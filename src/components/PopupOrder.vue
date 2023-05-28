@@ -331,6 +331,7 @@ export default {
           serviceFee = 0,
           vat = 0,
           createdAt,
+          updatedAt,
         } = JSON.parse(JSON.stringify(this.isRetail ? {} : this.currentTable.bill || {}));
         if (decreaseBill === undefined) {
           decreaseBill = this.appStore.settings?.decreaseBill || 0
@@ -338,7 +339,7 @@ export default {
         if (decreaseBillUnit === undefined) {
           decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
         }
-        this.formData = { id, items, decreaseBill, decreaseBillUnit, serviceFee, vat };
+        this.formData = { id, items, decreaseBill, decreaseBillUnit, serviceFee, vat, createdAt, updatedAt };
         if (createdAt) {
           this.billTime = this.$formatDate(createdAt, "DD/MM/YYYY hh:mm:ss");
         } else {

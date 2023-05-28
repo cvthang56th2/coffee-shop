@@ -322,7 +322,6 @@ export default {
         status: ORDER_STATUS.success,
         ...this.formData
       }
-      this.printBill()
       OrderServices.updateOrder(this.currentTable.bill.id, updateData)
       Toast.fire({
         icon: 'success',
@@ -335,6 +334,7 @@ export default {
         ...updateData
       })
       this.hide()
+      this.printBill()
     },
     cancelOrder() {
       if (this.currentTable.bill?.id) {
