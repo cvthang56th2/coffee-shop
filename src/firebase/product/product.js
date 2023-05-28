@@ -67,7 +67,7 @@ class productServices {
 
   async getAllProducts(options = {}) {
     try {
-      const q = query(collection(db, PRODUCT), orderBy("pid", 'desc'))
+      const q = query(collection(db, PRODUCT), orderBy("pid"))
       const querySnapshot = await getDocs(q);
       return snapshotToArray(querySnapshot)
     } catch (error) {

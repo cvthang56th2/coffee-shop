@@ -98,6 +98,7 @@ export default {
             (e.pid && String(e.pid).match(regex)) || (e.name && String(toLowerCaseNonAccentVietnamese(e.name)).match(regex))
         );
       }
+      result = result.sort((a, b) => a.pid > b.pid ? -1 : 1)
       return result;
     }
   },
@@ -155,7 +156,7 @@ export default {
       if (this.selectedProductIndex !== null) {
         this.products[this.selectedProductIndex] = data
       } else {       
-        this.products = [data, ...this.products]
+        this.products.push(data)
       }
       this.productStore.setProducts(this.products)
       this.selectedProductIndex = null

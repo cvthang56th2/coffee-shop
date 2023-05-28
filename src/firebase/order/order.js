@@ -100,9 +100,9 @@ class orderServices {
   getOrdersSnapshot(callback, { status }) {
     let q
     if (status) {
-      q = query(collection(db, ORDER), orderBy("createdAt", 'desc'), where("status", "==", status))
+      q = query(collection(db, ORDER), orderBy("createdAt"), where("status", "==", status))
     } else {
-      q = query(collection(db, ORDER), orderBy("createdAt", 'desc'))
+      q = query(collection(db, ORDER), orderBy("createdAt"))
     }
     if (typeof this.unsubscribeOrders === 'function') {
       this.unsubscribeOrders()
