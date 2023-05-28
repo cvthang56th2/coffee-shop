@@ -150,12 +150,12 @@
               <span v-else>0</span>
             </div>
           </div>
-          <!-- <div class="flex mt-2">
+          <div class="flex mt-2">
             <div class="font-bold">
               Thành tiền: {{ $numberWithCommas(totalBill) }} <span class="italic">VNĐ</span>
             </div>
           </div>
-          <div class="flex mt-2">
+          <!-- <div class="flex mt-2">
             <div class="w-1-2 mr-2">Khách đưa: {{ $numberWithCommas(formData.clientMoney) }}</div>
             <div class="w-1-2 ml-2">
               Trả lại: {{ $numberWithCommas(refundMoney) }}
