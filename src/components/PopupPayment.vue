@@ -150,12 +150,12 @@
               <span v-else>0</span>
             </div>
           </div>
-          <!-- <div class="flex mt-2">
+          <div class="flex mt-2">
             <div class="font-bold">
               Thành tiền: {{ $numberWithCommas(totalBill) }} <span class="italic">VNĐ</span>
             </div>
           </div>
-          <div class="flex mt-2">
+          <!-- <div class="flex mt-2">
             <div class="w-1-2 mr-2">Khách đưa: {{ $numberWithCommas(formData.clientMoney) }}</div>
             <div class="w-1-2 ml-2">
               Trả lại: {{ $numberWithCommas(refundMoney) }}
@@ -322,10 +322,7 @@ export default {
         status: ORDER_STATUS.success,
         ...this.formData
       }
-      this.printBill()
-      if (this.hasChange) {
-        OrderServices.updateOrder(this.currentTable.bill.id, updateData)
-      }
+      OrderServices.updateOrder(this.currentTable.bill.id, updateData)
       Toast.fire({
         icon: 'success',
         title: 'Thanh toán thành công!'
@@ -337,6 +334,7 @@ export default {
         ...updateData
       })
       this.hide()
+      this.printBill()
     },
     cancelOrder() {
       if (this.currentTable.bill?.id) {
