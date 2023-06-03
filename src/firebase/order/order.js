@@ -5,11 +5,13 @@ import {
   query,
   orderBy,
   where,
+  limit,
   collection,
   onSnapshot,
   Timestamp,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  startAfter
 } from 'firebase/firestore'
 import { db } from '../config'
 import { uid } from 'uid'
@@ -89,20 +91,26 @@ class orderServices {
 
   async getAllOrders(options = {}) {
     try {
-      const q = query(collection(db, ORDER), orderBy("updatedAt", 'desc'))
+      const { isNextPage, lastVisible, pageSize = 20 } = options
+      let q = query(collection(db, ORDER), orderBy("updatedAt", 'desc'), limit(pageSize))
+      if (isNextPage) {
+        q = query(q, startAfter(lastVisible));
+      }
       const querySnapshot = await getDocs(q);
-      return snapshotToArray(querySnapshot)
+      return {
+        data: snapshotToArray(querySnapshot),
+        lastVisible: querySnapshot.docs[querySnapshot.docs.length - 1],
+        nextPageAvailable: querySnapshot.docs.length >= pageSize
+      }
     } catch (error) {
       console.log('error', error)
     }
   }
 
   getOrdersSnapshot(callback, { status }) {
-    let q
+    let q = query(collection(db, ORDER), orderBy("createdAt"))
     if (status) {
-      q = query(collection(db, ORDER), orderBy("createdAt"), where("status", "==", status))
-    } else {
-      q = query(collection(db, ORDER), orderBy("createdAt"))
+      q = query(q, where("status", "==", status))
     }
     if (typeof this.unsubscribeOrders === 'function') {
       this.unsubscribeOrders()
