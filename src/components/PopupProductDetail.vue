@@ -119,7 +119,8 @@ export default {
       if (this.formData.id) {
         ProductServices.updateProduct(this.formData.id, productData)
       } else {
-        const id = this.productStore.products.length + 1
+        const maxPid = Math.max(...this.productStore.products.map(({ pid }) => pid))
+        const id = maxPid + 1;
         productData = {
           ...productData,
           id: `product-${id}`,
