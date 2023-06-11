@@ -305,6 +305,11 @@ export default {
     getItemTotal(item) {
       return (item.price || 0) * item.quantity - (item.decrease || 0);
     },
+    playSound () {
+      var data = { soundurl : '/bill-sound.mp3'} 
+      var audio = new Audio(data.soundurl);
+      audio.play();
+    },
     savePayment () {
       const Toast = this.$swal.mixin({
         toast: true,
@@ -333,6 +338,7 @@ export default {
         ...this.currentTable.bill,
         ...updateData
       })
+      this.playSound()
       this.hide()
       this.printBill()
     },
