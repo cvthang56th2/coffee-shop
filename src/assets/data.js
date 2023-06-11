@@ -150,7 +150,7 @@ export const listTables = [
     group: 2,
   },
   {
-    id: 33,
+    id: 31,
     name: `B-15`,
     group: 2,
   },
