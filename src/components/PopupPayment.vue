@@ -338,7 +338,6 @@ export default {
         ...this.currentTable.bill,
         ...updateData
       })
-      this.playSound()
       this.hide()
       this.printBill()
     },
