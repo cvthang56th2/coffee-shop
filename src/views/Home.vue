@@ -90,7 +90,9 @@ const onChangeTable = (toTableId) => {
     const changeToTable = listTables.value[tableIndex]
     if (changeToTable.bill) {
       OrderServices.updateOrder(selectedTable.value.bill.id, {
-        status: ORDER_STATUS.cancel
+        status: ORDER_STATUS.cancel,
+        isChangeTable: true,
+        changeToTable: toTableId
       })
       for (let item of selectedTable.value.bill.items) {
         const existItem = changeToTable.bill.items.find(e => e.id === item.id)
