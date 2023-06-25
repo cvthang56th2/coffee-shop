@@ -87,9 +87,35 @@ const onOrderSaved = (bill) => {
 const onChangeTable = (toTableId) => {
   const tableIndex = listTables.value.findIndex((e) => e.id === toTableId);
   if (tableIndex !== -1) {
-    listTables.value[tableIndex].bill = selectedTable.value.bill;
+    const changeToTable = listTables.value[tableIndex]
+    if (changeToTable.bill) {
+      OrderServices.updateOrder(selectedTable.value.bill.id, {
+        status: ORDER_STATUS.cancel
+      })
+      for (let item of selectedTable.value.bill.items) {
+        const existItem = changeToTable.bill.items.find(e => e.id === item.id)
+        if (existItem) {
+          existItem.quantity += item.quantity
+          existItem.decrease += item.decrease
+        } else {
+          changeToTable.bill.items.push(item)
+        }
+      }
+      OrderServices.updateOrder(changeToTable.bill.id, {
+        items: changeToTable.bill.items,
+        total: changeToTable.bill.total + selectedTable.value.bill.total,
+        decreaseBill: changeToTable.bill.decreaseBill + selectedTable.value.bill.decreaseBill,
+        serviceFee: changeToTable.bill.serviceFee + selectedTable.value.bill.serviceFee,
+        vat: changeToTable.bill.vat + selectedTable.value.bill.vat,
+      })
+    } else {
+      changeToTable.bill = selectedTable.value.bill;
+      OrderServices.updateOrder(selectedTable.value.bill.id, {
+        tableId: toTableId
+      })
+    }
     delete selectedTable.value.bill;
-    selectedTable.value = listTables.value[tableIndex];
+    selectedTable.value = changeToTable;
   }
 };
 
@@ -345,7 +371,7 @@ onMounted(() => {
     <PopupChangeTable
       v-model="isShowPopupChangeTable"
       :currentTable="selectedTable || {}"
-      :emptyTables="listTablesEmpty"
+      :listTables="listTables"
       @saved="onChangeTable"
     />
     <PopupPayment

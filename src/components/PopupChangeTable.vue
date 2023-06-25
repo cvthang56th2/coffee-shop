@@ -15,7 +15,7 @@
       <div class="flex items-center">
         <div class="pr-4 w-1/3 text-right font-medium">Tới bàn:</div>
         <div class="w-2/3">
-          <v-select class="font-bold" v-model="changeToTable" :options="computedEmptyTables" :reduce="country => country.id" label="formattedName" appendToBody placeholder="Chọn bàn..." :clearable="false"></v-select>
+          <v-select class="font-bold" v-model="changeToTable" :options="computedListTables" :reduce="country => country.id" label="formattedName" appendToBody placeholder="Chọn bàn..." :clearable="false"></v-select>
         </div>
       </div>
     </div>
@@ -37,7 +37,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    emptyTables: {
+    listTables: {
       type: Array,
       default: () => ([])
     }
@@ -53,11 +53,16 @@ export default {
     },
   },
   computed: {
-    computedEmptyTables () {
-      return this.emptyTables.map(e => ({
-        ...e,
-        formattedName: `khu ${ e.group } - bàn ${ e.name }`
-      }))
+    computedListTables () {
+      return this.listTables.reduce((resultArr, e) => {
+        if (e.id !== this.currentTable.id) {
+          resultArr.push({
+            ...e,
+            formattedName: `khu ${ e.group } - bàn ${ e.name }`
+          })
+        }
+        return resultArr
+      }, [])
     }
   },
   data: () => ({
@@ -88,9 +93,6 @@ export default {
         })
         return
       }
-      OrderServices.updateOrder(this.currentTable.bill.id, {
-        tableId: this.changeToTable
-      })
       this.$emit('saved', this.changeToTable)
 
       Toast.fire({

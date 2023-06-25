@@ -86,9 +86,7 @@ export default {
       this.isShow = v
       if (v) {
         this.selectedOrderIndex = null
-        if (!this.orders.length) {
-          this.getOrders()
-        }
+        this.getOrders()
       }
     },
   },
