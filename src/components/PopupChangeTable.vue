@@ -86,20 +86,41 @@ export default {
           toast.addEventListener('click', ()=> this.$swal.close())
         }
       })
-      if (!this.changeToTable) {
+      
+      const selectedChangeToTable = this.listTables.find(e => e.id === this.changeToTable)
+      if (!selectedChangeToTable) {
         Toast.fire({
           icon: 'warning',
           title: 'Chưa chọn bàn muốn chuyển tới'
         })
         return
       }
-      this.$emit('saved', this.changeToTable)
+      const handleOk = () => {
+        this.$emit('saved', this.changeToTable)
+        Toast.fire({
+          icon: 'success',
+          title: 'Chuyển bàn thành công!'
+        })
+        this.hide();
+      }
+      if (selectedChangeToTable.bill) {
+        this.$swal
+          .fire({
+            title: `Bàn ${ selectedChangeToTable.name } khu ${selectedChangeToTable.group} đang có khách, bạn có chắc muốn đổi tới bàn này không?`,
+            showCancelButton: true,
+            cancelButtonText: "Không",
+            confirmButtonText: "Có",
+          })
+          .then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              handleOk()
+            }
+          });
+      } else {
+        handleOk()
+      }
 
-      Toast.fire({
-        icon: 'success',
-        title: 'Chuyển bàn thành công!'
-      })
-      this.hide();
     }
   },
 };
