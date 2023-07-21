@@ -8,7 +8,7 @@
   >
     <template v-slot:buttons>
       <div class="flex py-2">
-        <div class="w-1/2 px-4" :class="isRetail ? 'w-full' : 'w-1/2'">
+        <div class="w-1/2 px-4">
           <button
             class="bg-pink-500 text-white hover:bg-pink-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b"
             type="button"
@@ -17,7 +17,7 @@
             Thanh toán
           </button>
         </div>
-        <div v-if="!isRetail" class="w-1/2 px-4">
+        <div class="w-1/2 px-4">
           <button
             class="bg-green-500 text-white hover:bg-green-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b"
             type="button"
@@ -31,11 +31,7 @@
     <template v-slot:title>
       <div class="lg:flex items-center justify-between">
         <h4 class="text-2xl font-semibold">
-          {{
-            isRetail
-              ? "Bán lẻ"
-              : `Order cho bàn ${currentTable.name} khu ${currentTable.group}`
-          }}
+          Order cho bàn {{currentTable.name}} khu {{currentTable.group}}
         </h4>
         <div class="lg:ml-4 font-semibold text-blue-500 flex-[0_0_300px] flex items-center">
           <ClockIcon class="mr-1" />
@@ -296,10 +292,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    isRetail: {
-      type: Boolean,
-      default: false,
-    },
     currentTable: {
       type: Object,
       default: () => ({}),
@@ -332,7 +324,7 @@ export default {
           vat = 0,
           createdAt,
           updatedAt,
-        } = JSON.parse(JSON.stringify(this.isRetail ? {} : this.currentTable.bill || {}));
+        } = JSON.parse(JSON.stringify(this.currentTable.bill || {}));
         if (decreaseBill === undefined) {
           decreaseBill = this.appStore.settings?.decreaseBill || 0
         }
@@ -467,7 +459,7 @@ export default {
       const billData = {
         ...JSON.parse(JSON.stringify(this.formData)),
         total: this.totalBill,
-        tableId: this.isRetail ? "retail" : this.currentTable.id,
+        tableId: this.currentTable.id,
         id: this.formData.id || uid(8),
         status: ORDER_STATUS.pending,
       };
@@ -479,12 +471,10 @@ export default {
         OrderServices.createOrder(billData);
       }
       this.$emit("saved", billData);
-      if (!this.isRetail) {
-        Toast.fire({
-          icon: "success",
-          title: "Order thành công!",
-        });
-      }
+      Toast.fire({
+        icon: "success",
+        title: "Order thành công!",
+      });
       this.hide();
       return true;
     },

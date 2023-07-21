@@ -52,36 +52,21 @@ const statisticCurrent = computed(() => {
   };
 });
 const isShowPopupOrder = ref(false);
-const isRetail = ref(false);
-const retailBill = ref(null)
 const isShowPopupChangeTable = ref(false);
 const isShowPopupPayment = ref(false);
 const selectedTable = ref(null);
 const appStore = useAppStore()
 
 const openPopupOrder = (table) => {
-  isRetail.value = false
   selectedTable.value = table;
   isShowPopupOrder.value = true;
 };
 
-const openRetail = () => {
-  isRetail.value = true
-  isShowPopupOrder.value = true;
-}
-
 const onCloseOrder = () => {
-  if (isRetail.value && !retailBill.value) {
-    isRetail.value = false
-  }
 };
 
 const onOrderSaved = (bill) => {
-  if (isRetail.value) {
-    retailBill.value = bill
-  } else {
-    selectedTable.value.bill = bill;
-  }
+  selectedTable.value.bill = bill;
 };
 
 const onChangeTable = (toTableId) => {
@@ -122,11 +107,7 @@ const onChangeTable = (toTableId) => {
 };
 
 const onSavePayment = () => {
-  if (isRetail.value) {
-    retailBill.value = null
-  } else {
-    delete selectedTable.value.bill
-  }
+  delete selectedTable.value.bill
 };
 
 const cancelOrder = () => {
@@ -214,12 +195,6 @@ onMounted(() => {
             @click="openPopupOrder(selectedTable)"
           >
             Chọn món
-          </button>
-          <button
-            class="md:w-[70px] md:h-[70px] px-2 py-1 mb-1 whitespace-nowrap md:whitespace-normal text-sm md:text-md ease-linear transition-all duration-150 flex items-center justify-center text-white bg-blue-500 hover:bg-blue-700 font-bold rounded-md mr-4"
-            @click="openRetail()"
-          >
-            Bán <br class="hidden md:block">lẻ
           </button>
           <button
             :disabled="!selectedTable || (selectedTable && !selectedTable.bill)"
@@ -364,8 +339,7 @@ onMounted(() => {
     </div>
     <PopupOrder
       v-model="isShowPopupOrder"
-      :currentTable="isRetail ? {} : (selectedTable || {})"
-      :isRetail="isRetail"
+      :currentTable="(selectedTable || {})"
       @saved="onOrderSaved"
       @closed="onCloseOrder"
       @openPayment="isShowPopupPayment = true"
@@ -378,8 +352,7 @@ onMounted(() => {
     />
     <PopupPayment
       v-model="isShowPopupPayment"
-      :currentTable="isRetail ? { bill: (retailBill || {}) } : (selectedTable || {})"
-      :isRetail="isRetail"
+      :currentTable="(selectedTable || {})"
       @saved="onSavePayment"
     />
   </div>

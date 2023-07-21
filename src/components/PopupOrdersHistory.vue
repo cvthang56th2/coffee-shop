@@ -45,7 +45,6 @@
     <PopupPayment
       v-model="isShowPopupPayment"
       :currentTable="currentTable"
-      :isRetail="isRetail"
       persistent
       isEditMode
       @saved="onSavePayment"
@@ -94,18 +93,12 @@ export default {
     selectedOrder () {
       return JSON.parse(JSON.stringify(this.orders[this.selectedOrderIndex] || {}))
     },
-    isRetail () {
-      return this.selectedOrder?.tableId === 'retail'
-    },
     currentTable () {
       if (this.selectedOrderIndex === null) {
         return { bill: {} }
       }
-      let table = {}
       let result = { bill: this.selectedOrder }
-      if (!this.isRetail) {
-        table = listTables.find(e => e.id === this.selectedOrder.tableId)
-      }
+      const table = listTables.find(e => e.id === this.selectedOrder.tableId)
       result = {
         ...(JSON.parse(JSON.stringify(table || {}))),
         bill: this.selectedOrder

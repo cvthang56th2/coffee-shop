@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :hideXbutton="isRetail" :persistent="persistent">
+  <Popup v-model="isShow" @hide="hide" width="700px" title="Thanh toán" :persistent="persistent">
     <template v-slot:top-body>
       <div class="flex flex-wrap mb-4 py-2 flex-0 border-b-2">
         <div class="w-full lg:w-1/2 items-center flex px-2 mb-2">
@@ -103,7 +103,7 @@
         </div>
         <div class="flex font-bold">
           <div class="w-1-2 mr-2">Khu vực: {{ currentTable.group }}</div>
-          <div class="w-1-2 ml-2">Bàn: {{ isRetail ? 'Bán lẻ' : currentTable.name }}</div>
+          <div class="w-1-2 ml-2">Bàn: {{ currentTable.name }}</div>
         </div>
         <div class="flex mt-2 border-b-2px table-text">
           <div class="w-5-12 px-2 py-1 text-center font-bold">Món</div>
@@ -178,12 +178,11 @@
           Hủy bill
         </button>
         <!-- <button
-          class="bg-blue-500 text-white hover:bg-blue-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2"
+          class="bg-blue-500 text-white hover:bg-blue-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2 w-1/3"
           type="button"
-          :class="isRetail ? 'ml-2 w-1/3' : 'w-1/2'"
           @click="printBill"
         >
-          In hoá đơn
+          Chọn món
         </button> -->
         <button
           class="bg-green-500 text-white w-1/2 hover:bg-green-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm ml-2"
@@ -209,10 +208,6 @@ import CheckedIcon from "./icons/Checked.vue";
 export default {
   props: {
     modelValue: {
-      type: Boolean,
-      default: false,
-    },
-    isRetail: {
       type: Boolean,
       default: false,
     },
