@@ -8,7 +8,7 @@
   >
     <template v-slot:buttons>
       <div class="flex py-2">
-        <div class="w-1/2 px-4">
+        <div v-if="!openFromPopupPayment" class="w-1/2 px-4">
           <button
             class="bg-pink-500 text-white hover:bg-pink-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b"
             type="button"
@@ -17,7 +17,7 @@
             Thanh toán
           </button>
         </div>
-        <div class="w-1/2 px-4">
+        <div class="px-4" :class="openFromPopupPayment ? 'w-full' : 'w-1/2'">
           <button
             class="bg-green-500 text-white hover:bg-green-700 background-transparent font-bold uppercase py-3 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 w-full rounded-b"
             type="button"
@@ -292,6 +292,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    openFromPopupPayment: {
+      type: Boolean,
+      default: false
+    },
     currentTable: {
       type: Object,
       default: () => ({}),
@@ -461,8 +465,10 @@ export default {
         total: this.totalBill,
         tableId: this.currentTable.id,
         id: this.formData.id || uid(8),
-        status: ORDER_STATUS.pending,
       };
+      if (!this.openFromPopupPayment) {
+        billData.status = ORDER_STATUS.pending
+      }
       if (this.formData.id) {
         if (this.hasChange) {
           OrderServices.updateOrder(this.formData.id, billData);

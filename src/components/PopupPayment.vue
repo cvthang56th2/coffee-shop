@@ -129,7 +129,7 @@
             {{ $numberWithCommas(item.price) }}
           </div>
           <div class="w-1-12 px-2 py-1 text-center">
-            {{ item.decrease }}
+            {{ $numberWithCommas(item.decrease) }}
           </div>
           <div class="w-2-12 px-2 py-1 text-center">
             {{ $numberWithCommas(getItemTotal(item)) }}
@@ -177,13 +177,13 @@
         >
           Hủy bill
         </button>
-        <!-- <button
+        <button
           class="bg-blue-500 text-white hover:bg-blue-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm mr-2 w-1/3"
           type="button"
-          @click="printBill"
+          @click="isShowPopupOrder = true"
         >
           Chọn món
-        </button> -->
+        </button>
         <button
           class="bg-green-500 text-white w-1/2 hover:bg-green-700 background-transparent font-bold uppercase px-4 py-2 text-sm outline-none focus:outline-none ease-linear transition-all duration-150 rounded-sm ml-2"
           type="button"
@@ -193,11 +193,18 @@
         </button>
       </div>
     </template>
+    <PopupOrder
+      v-model="isShowPopupOrder"
+      :currentTable="(currentTable || {})"
+      open-from-popup-payment
+      @saved="onOrderSaved"
+    />
   </Popup>
 </template>
 
 <script>
 import Popup from "./Popup.vue";
+import PopupOrder from "./PopupOrder.vue";
 import OrderServices from '../firebase/order/order'
 import { ORDER_STATUS } from '../constants/constants'
 import InputMoney from "./InputMoney.vue";
@@ -228,7 +235,8 @@ export default {
     Popup,
     InputMoney,
     CheckedIcon,
-    vSelect
+    vSelect,
+    PopupOrder
   },
   setup () {
     const appStore = useAppStore()
@@ -239,22 +247,10 @@ export default {
       this.isShow = v;
       if (v) {
         this.hasChange = false
-        let { serviceFee = 0, vat = 0, decreaseBill, decreaseBillUnit, clientMoney = 0 } = this.currentTable.bill || {};
-        if (decreaseBill === undefined) {
-          decreaseBill = this.appStore.settings?.decreaseBill || 0
-        }
-        if (decreaseBillUnit === undefined) {
-          decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
-        }
-        this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
-        // this.$nextTick(() => {
-        //   const clientInputEl = document.querySelector('#clientMoney')
-        //   if (clientInputEl && typeof clientInputEl.focus === 'function') {
-        //     clientInputEl.focus()
-        //   }
-        // })
+        this.attachFormData()
       }
     },
+    'currentTable': 'attachFormData'
   },
   computed: {
     totalItems () {
@@ -284,9 +280,20 @@ export default {
   data: () => ({
     hasChange: false,
     isShow: false,
+    isShowPopupOrder: false,
     formData: {}
   }),
   methods: {
+    attachFormData() {
+      let { serviceFee = 0, vat = 0, decreaseBill, decreaseBillUnit, clientMoney = 0 } = this.currentTable.bill || {};
+      if (decreaseBill === undefined) {
+        decreaseBill = this.appStore.settings?.decreaseBill || 0
+      }
+      if (decreaseBillUnit === undefined) {
+        decreaseBillUnit = this.appStore.settings?.decreaseBillUnit || 'VND'
+      }
+      this.formData = { serviceFee, vat, decreaseBill, decreaseBillUnit, clientMoney }
+    },
     onChangeDescreaseBillUnit () {
       this.hasChange = true
       this.formData.decreaseBill = 0
@@ -375,6 +382,9 @@ export default {
           }
         })
       }
+    },
+    onOrderSaved (bill) {
+      this.$emit('orderSaved', bill)
     }
   },
 };

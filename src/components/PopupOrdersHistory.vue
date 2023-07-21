@@ -48,6 +48,7 @@
       persistent
       isEditMode
       @saved="onSavePayment"
+      @orderSaved="onOrderSaved"
     />
   </Popup>
 </template>
@@ -158,6 +159,12 @@ export default {
     onSavePayment (data) {
       this.orders[this.selectedOrderIndex] = data
       this.selectedOrderIndex = null
+    },
+    onOrderSaved (bill = {}) {
+      this.orders[this.selectedOrderIndex] = {
+        ...this.orders[this.selectedOrderIndex],
+        ...bill
+      }
     }
   },
 };

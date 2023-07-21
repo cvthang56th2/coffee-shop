@@ -354,6 +354,7 @@ onMounted(() => {
       v-model="isShowPopupPayment"
       :currentTable="(selectedTable || {})"
       @saved="onSavePayment"
+      @orderSaved="onOrderSaved"
     />
   </div>
 </template>
